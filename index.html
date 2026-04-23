@@ -19,14 +19,16 @@
     --green: #3dd68c;
     --red: #f7706a;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
   body {
     font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
     background: var(--bg);
     color: var(--text);
     line-height: 1.7;
     display: flex;
+    overflow-x: hidden;
   }
 
   /* === SIDEBAR === */
@@ -41,6 +43,7 @@
     z-index: 100;
     transition: transform .3s;
     padding-bottom: 40px;
+    flex-shrink: 0;
   }
   .sidebar-logo {
     padding: 28px 20px 20px;
@@ -56,12 +59,7 @@
     margin-bottom: 8px;
     display: inline-block;
   }
-  .sidebar-logo h1 {
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 1.4;
-    color: var(--text);
-  }
+  .sidebar-logo h1 { font-size: 14px; font-weight: 700; line-height: 1.4; }
   .sidebar-logo .date { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
   nav ul { list-style: none; padding: 12px 0; }
   nav ul li a {
@@ -95,6 +93,7 @@
   #main {
     margin-left: 260px;
     flex: 1;
+    min-width: 0;
     max-width: calc(100% - 260px);
     padding: 0 40px 80px;
   }
@@ -120,12 +119,15 @@
     background: linear-gradient(135deg, #fff 30%, var(--accent3));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
+    word-break: keep-all;
   }
   .hero p {
     font-size: 15px;
     color: var(--text-muted);
     max-width: 700px;
     line-height: 1.8;
+    word-break: keep-all;
   }
   .hero-stats {
     display: grid;
@@ -148,9 +150,9 @@
     height: 3px;
     background: linear-gradient(90deg, var(--accent), var(--accent3));
   }
-  .stat-card .label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
-  .stat-card .value { font-size: 26px; font-weight: 800; color: var(--text); }
-  .stat-card .sub { font-size: 11px; color: var(--green); margin-top: 4px; }
+  .stat-card .label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
+  .stat-card .value { font-size: 24px; font-weight: 800; color: var(--text); word-break: break-all; }
+  .stat-card .sub { font-size: 11px; color: var(--green); margin-top: 4px; line-height: 1.5; word-break: keep-all; }
 
   /* === SECTIONS === */
   section { margin-bottom: 64px; }
@@ -161,6 +163,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    word-break: keep-all;
   }
   section h3 .section-num {
     width: 32px; height: 32px;
@@ -177,6 +180,8 @@
     color: var(--text-muted);
     margin-bottom: 28px;
     margin-left: 44px;
+    word-break: keep-all;
+    line-height: 1.7;
   }
 
   /* === CARDS GRID === */
@@ -194,8 +199,9 @@
     font-weight: 700;
     margin-bottom: 12px;
     color: var(--accent3);
+    word-break: keep-all;
   }
-  .info-card p { font-size: 13px; color: var(--text-muted); line-height: 1.8; }
+  .info-card p { font-size: 13px; color: var(--text-muted); line-height: 1.8; word-break: keep-all; }
   .info-card ul { list-style: none; }
   .info-card ul li {
     font-size: 13px;
@@ -204,9 +210,10 @@
     border-bottom: 1px solid var(--border);
     display: flex;
     gap: 8px;
+    word-break: keep-all;
   }
   .info-card ul li:last-child { border: none; }
-  .info-card ul li::before { content: '›'; color: var(--accent); font-weight: 700; }
+  .info-card ul li::before { content: '›'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
 
   /* === CHART WRAPPERS === */
   .chart-wrap {
@@ -215,24 +222,32 @@
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 20px;
+    min-width: 0;
   }
   .chart-wrap h4 {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-muted);
     margin-bottom: 20px;
+    word-break: keep-all;
+    line-height: 1.5;
   }
-  .chart-wrap canvas { max-height: 280px; }
+  .chart-wrap canvas {
+    width: 100% !important;
+    max-width: 100%;
+    max-height: 260px;
+  }
 
   /* === TABLES === */
   .table-wrap {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     margin-bottom: 20px;
   }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 480px; }
   thead tr { background: var(--surface2); }
   thead th {
     padding: 14px 16px;
@@ -242,16 +257,18 @@
     color: var(--text-muted);
     letter-spacing: .5px;
     text-transform: uppercase;
+    white-space: nowrap;
   }
   tbody tr { border-top: 1px solid var(--border); transition: background .15s; }
   tbody tr:hover { background: var(--surface2); }
-  tbody td { padding: 14px 16px; color: var(--text); }
+  tbody td { padding: 12px 16px; color: var(--text); word-break: keep-all; }
   td .pill {
     display: inline-block;
     padding: 2px 10px;
     border-radius: 20px;
     font-size: 11px;
     font-weight: 600;
+    white-space: nowrap;
   }
   td .pill.green { background: rgba(61,214,140,.15); color: var(--green); }
   td .pill.blue { background: rgba(79,192,255,.15); color: var(--accent3); }
@@ -267,6 +284,7 @@
     padding: 24px;
     position: relative;
     overflow: hidden;
+    min-width: 0;
   }
   .game-card::after {
     content: '';
@@ -275,17 +293,14 @@
     width: 120px; height: 120px;
     border-radius: 50%;
     opacity: .05;
+    pointer-events: none;
   }
   .game-card.k1::after { background: var(--accent); }
   .game-card.k2::after { background: var(--accent3); }
   .game-card.k3::after { background: var(--accent2); }
   .game-card.k4::after { background: var(--green); }
-  .game-card .game-title {
-    font-size: 17px;
-    font-weight: 800;
-    margin-bottom: 6px;
-  }
-  .game-card .game-dev { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+  .game-card .game-title { font-size: 17px; font-weight: 800; margin-bottom: 6px; word-break: keep-all; }
+  .game-card .game-dev { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; word-break: keep-all; }
   .game-card .wow-badge {
     display: inline-flex;
     align-items: center;
@@ -300,17 +315,18 @@
     margin-bottom: 14px;
   }
   .game-card .wow-badge::before { content: '⚡'; }
-  .game-card p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .game-card p { font-size: 13px; color: var(--text-muted); line-height: 1.7; word-break: keep-all; }
   .game-card .metrics {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid var(--border);
+    flex-wrap: wrap;
   }
-  .game-card .metrics .m { text-align: center; }
-  .game-card .metrics .m .mv { font-size: 16px; font-weight: 700; color: var(--text); }
-  .game-card .metrics .m .mk { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+  .game-card .metrics .m { text-align: center; min-width: 60px; }
+  .game-card .metrics .m .mv { font-size: 15px; font-weight: 700; color: var(--text); word-break: break-all; }
+  .game-card .metrics .m .mk { font-size: 10px; color: var(--text-muted); margin-top: 2px; word-break: keep-all; }
 
   /* === PLATFORM CARDS === */
   .platform-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
@@ -322,6 +338,7 @@
     display: flex;
     gap: 16px;
     align-items: flex-start;
+    min-width: 0;
   }
   .plat-icon {
     width: 44px; height: 44px;
@@ -330,9 +347,9 @@
     font-size: 22px;
     flex-shrink: 0;
   }
-  .plat-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-  .plat-card p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
-  .plat-card .hit { font-size: 11px; color: var(--accent2); margin-top: 8px; font-weight: 600; }
+  .plat-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; word-break: keep-all; }
+  .plat-card p { font-size: 12px; color: var(--text-muted); line-height: 1.6; word-break: keep-all; }
+  .plat-card .hit { font-size: 11px; color: var(--accent2); margin-top: 8px; font-weight: 600; word-break: keep-all; }
 
   /* === STRATEGY LIST === */
   .strategy-list { display: flex; flex-direction: column; gap: 12px; }
@@ -355,8 +372,8 @@
     color: #fff;
     flex-shrink: 0;
   }
-  .strat-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-  .strat-item p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .strat-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; word-break: keep-all; }
+  .strat-item p { font-size: 13px; color: var(--text-muted); line-height: 1.7; word-break: keep-all; }
 
   /* === FOOTER === */
   footer {
@@ -375,15 +392,24 @@
     background: var(--surface);
     border-radius: 6px;
     border: 1px solid var(--border);
+    word-break: break-all;
   }
   .ref-item a { color: var(--text-muted); }
   .ref-item a:hover { color: var(--accent3); }
 
   /* === PROGRESS BAR === */
-  .prog-row { margin-bottom: 14px; }
-  .prog-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
-  .prog-label span:first-child { color: var(--text); }
-  .prog-label span:last-child { color: var(--accent); font-weight: 700; }
+  .prog-row { margin-bottom: 16px; }
+  .prog-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 12px;
+    margin-bottom: 7px;
+    flex-wrap: wrap;
+  }
+  .prog-label span:first-child { color: var(--text); line-height: 1.5; word-break: keep-all; flex: 1; min-width: 0; }
+  .prog-label span:last-child { color: var(--accent); font-weight: 700; flex-shrink: 0; }
   .prog-bar { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
   .prog-fill {
     height: 100%;
@@ -406,22 +432,65 @@
     border-radius: 8px;
     font-size: 18px;
     cursor: pointer;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* === RESPONSIVE === */
+  /* === RESPONSIVE: Tablet (≤1024px) === */
   @media (max-width: 1024px) {
     #sidebar { transform: translateX(-100%); }
     #sidebar.open { transform: translateX(0); }
     #main { margin-left: 0; max-width: 100%; padding: 0 20px 60px; }
-    #menu-toggle { display: flex; align-items: center; justify-content: center; }
+    #menu-toggle { display: flex; }
+    .hero { padding: 56px 0 32px; }
     .hero-stats { grid-template-columns: repeat(2, 1fr); }
     .cards-2, .cards-3, .game-grid { grid-template-columns: 1fr; }
     .platform-grid { grid-template-columns: 1fr; }
     .ref-grid { grid-template-columns: 1fr; }
   }
+
+  /* === RESPONSIVE: Mobile (≤640px) === */
   @media (max-width: 640px) {
-    .hero-stats { grid-template-columns: 1fr 1fr; }
-    .hero h2 { font-size: 24px; }
+    #main { padding: 0 16px 48px; }
+    .hero { padding: 48px 0 28px; margin-bottom: 32px; }
+    .hero h2 { font-size: 22px; }
+    .hero p { font-size: 14px; }
+    .hero-stats { grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+    .stat-card { padding: 14px; }
+    .stat-card .value { font-size: 20px; }
+    .stat-card .label { font-size: 10px; }
+    .stat-card .sub { font-size: 10px; }
+    section { margin-bottom: 48px; }
+    section h3 { font-size: 18px; gap: 10px; }
+    section h3 .section-num { width: 28px; height: 28px; font-size: 12px; }
+    .section-desc { margin-left: 0; font-size: 13px; margin-bottom: 20px; }
+    .chart-wrap { padding: 16px; }
+    .chart-wrap h4 { font-size: 12px; margin-bottom: 14px; }
+    .chart-wrap canvas { max-height: 220px; }
+    .info-card { padding: 16px; }
+    .info-card h4 { font-size: 14px; }
+    .info-card p, .info-card ul li { font-size: 12px; }
+    .game-card { padding: 18px; }
+    .game-card .game-title { font-size: 15px; }
+    .game-card .metrics .mv { font-size: 13px; }
+    .plat-card { padding: 14px; gap: 12px; }
+    .plat-icon { width: 36px; height: 36px; font-size: 18px; }
+    .strat-item { padding: 14px 16px; }
+    .ref-grid { grid-template-columns: 1fr; }
+    .prog-label { font-size: 11px; }
+    /* 검증 배너 모바일 */
+    .verify-banner { flex-direction: column; gap: 8px; padding: 12px 14px !important; font-size: 12px !important; }
+    .verify-banner .verify-tags { font-size: 11px; }
+  }
+
+  /* === RESPONSIVE: Small phone (≤400px) === */
+  @media (max-width: 400px) {
+    .hero-stats { grid-template-columns: 1fr; }
+    .hero h2 { font-size: 20px; }
+    section h3 { font-size: 16px; }
+    table { min-width: 360px; font-size: 12px; }
+    thead th { padding: 10px 12px; }
+    tbody td { padding: 10px 12px; }
   }
 </style>
 </head>
@@ -452,15 +521,14 @@
 
 <main id="main">
   <!-- VERIFICATION BANNER -->
-  <div style="background:rgba(61,214,140,.07);border:1px solid rgba(61,214,140,.25);border-radius:10px;padding:14px 20px;margin-top:32px;font-size:13px;display:flex;gap:12px;align-items:flex-start">
+  <div class="verify-banner" style="background:rgba(61,214,140,.07);border:1px solid rgba(61,214,140,.25);border-radius:10px;padding:14px 20px;margin-top:32px;font-size:13px;display:flex;gap:12px;align-items:flex-start">
     <span style="font-size:20px;flex-shrink:0">🔍</span>
-    <div>
+    <div style="min-width:0">
       <strong style="color:var(--green)">교차검증 완료 (2026.04.23)</strong>
       <span style="color:var(--text-muted);margin-left:8px;font-size:11px">Statista · Seoulz · PocketGamer · Smilegate 공식 · WifiTalents 등 다중 출처 확인</span>
-      <div style="margin-top:6px;color:var(--text-muted)">
-        <span style="color:var(--green);margin-right:6px">✅ 검증 통과</span> ARPU $450+ · 결제유저 52% · 실버게이머 28% · 델타포스 $3억(5개월) · CZN 바하무트 골드 · 넷마블 해외 80%+ · H5 CAGR 17.4%
-        &nbsp;|&nbsp;
-        <span style="color:var(--red);margin-right:6px">🔴 수정됨</span> 한국 시장 규모 $20.9B→$14.6B · 침투율 57%(현재)/70%(2030 예측) 기간 명기 · 델타포스 중국 96% 맥락 보완 · H5 출처 편차 주석 추가
+      <div class="verify-tags" style="margin-top:8px;color:var(--text-muted);font-size:12px;line-height:1.8;word-break:keep-all">
+        <span style="color:var(--green)">✅ 검증 통과</span> — ARPU $450+ · 결제유저 52% · 실버게이머 28% · 델타포스 $3억(5개월) · CZN 바하무트 골드 · 넷마블 해외 80%+ · H5 CAGR 17.4%<br>
+        <span style="color:var(--red)">🔴 수정됨</span> — 한국 시장 규모 $20.9B→$14.6B · 침투율 기간 명기 · 델타포스 중국 96% 맥락 추가 · H5 출처 편차 주석
       </div>
     </div>
   </div>
@@ -468,28 +536,28 @@
   <!-- HERO -->
   <div class="hero">
     <div class="kicker">GLOBAL GAME MARKET INTELLIGENCE · 2026</div>
-    <h2>2026년 모바일 및 H5 게임 시장의<br>구조적 전환과 신흥 흥행 모델 분석</h2>
+    <h2>2026년 모바일 및 H5 게임 시장의 구조적 전환과 신흥 흥행 모델 분석</h2>
     <p>2026년 4월 현재, 글로벌 게임 산업은 기술적 임계점을 돌파하며 새로운 구조적 팽창기에 진입했다. 전통적인 앱 마켓 중심의 모바일 생태계와 H5 미니 게임 생태계가 융합하는 독특한 양상이 전개되고 있다.</p>
     <div class="hero-stats">
       <div class="stat-card">
-        <div class="label">한국 게임 시장 규모 <span style="font-size:9px;background:rgba(247,112,106,.2);color:var(--red);padding:1px 5px;border-radius:3px;margin-left:4px">수정됨</span></div>
+        <div class="label">한국 게임 시장 규모 <span style="font-size:9px;background:rgba(247,112,106,.2);color:var(--red);padding:1px 5px;border-radius:3px">수정됨</span></div>
         <div class="value">$146억</div>
-        <div class="sub">2025 기준 (Statista·Seoulz) — 구형 예측치($209.8B) 오류 수정</div>
+        <div class="sub">2025 기준 (Statista·Seoulz) — 구형 예측치 오류 수정</div>
       </div>
       <div class="stat-card">
-        <div class="label">모바일 게이머 침투율 <span style="font-size:9px;background:rgba(247,160,79,.2);color:var(--accent2);padding:1px 5px;border-radius:3px;margin-left:4px">주석 추가</span></div>
+        <div class="label">모바일 게이머 침투율 <span style="font-size:9px;background:rgba(247,160,79,.2);color:var(--accent2);padding:1px 5px;border-radius:3px">주석</span></div>
         <div class="value">57%</div>
-        <div class="sub">2025년 현재 기준 / 70%는 2030년 예측치(Statista)</div>
+        <div class="sub">2025년 현재 / 70%는 2030년 예측치</div>
       </div>
       <div class="stat-card">
         <div class="label">1인당 연간 게임 지출 (ARPU)</div>
         <div class="value">$450+</div>
-        <div class="sub">세계 최고 수준 — 아태평균($154)의 약 3배 ✅ 교차검증 완료</div>
+        <div class="sub">아태 평균 $154의 약 3배 ✅ 검증 완료</div>
       </div>
       <div class="stat-card">
-        <div class="label">H5 게임 시장 규모 (2026) <span style="font-size:9px;background:rgba(247,160,79,.2);color:var(--accent2);padding:1px 5px;border-radius:3px;margin-left:4px">편차 있음</span></div>
-        <div class="value">$1.4~2.3억</div>
-        <div class="sub">기관별 편차 존재 · CAGR 17.4% (→2035) ✅</div>
+        <div class="label">H5 게임 시장 규모 <span style="font-size:9px;background:rgba(247,160,79,.2);color:var(--accent2);padding:1px 5px;border-radius:3px">편차 있음</span></div>
+        <div class="value">$1.4~2.3B</div>
+        <div class="sub">기관별 편차 · CAGR 17.4% (→2035) ✅</div>
       </div>
     </div>
   </div>
@@ -504,15 +572,13 @@
         <h4>플랫폼별 IAP 매출 비교 (2025~2026)</h4>
         <canvas id="chartIAP"></canvas>
       </div>
-      <div>
-        <div class="chart-wrap">
-          <h4>주요 시장 지표</h4>
-          <div class="prog-row"><div class="prog-label"><span>게이머 2명 중 1명은 실제로 결제한다</span><span>52%</span></div><div class="prog-bar"><div class="prog-fill" data-w="52"></div></div></div>
-          <div class="prog-row"><div class="prog-label"><span>한국 게이머 연간 결제액 <b style="color:var(--text)">$450</b> — 아시아 평균 $154의 약 3배</span><span>~3x</span></div><div class="prog-bar"><div class="prog-fill" data-w="75"></div></div></div>
-          <div class="prog-row"><div class="prog-label"><span>주요 게임사 10곳 중 8곳, 자체 직판 채널 도입</span><span>~80%</span></div><div class="prog-bar"><div class="prog-fill" data-w="80"></div></div></div>
-          <div class="prog-row"><div class="prog-label"><span>iOS 결제 매출이 안드로이드보다 더 많다</span><span>+75%</span></div><div class="prog-bar"><div class="prog-fill" data-w="75"></div></div></div>
-          <div class="prog-row"><div class="prog-label"><span>자체 직판 매출, 시장 통계에서 빠져 있다</span><span>10~20%</span></div><div class="prog-bar"><div class="prog-fill" data-w="20"></div></div></div>
-        </div>
+      <div class="chart-wrap">
+        <h4>주요 시장 지표</h4>
+        <div class="prog-row"><div class="prog-label"><span>게이머 2명 중 1명은 실제로 결제한다</span><span>52%</span></div><div class="prog-bar"><div class="prog-fill" data-w="52"></div></div></div>
+        <div class="prog-row"><div class="prog-label"><span>한국 게이머 연간 결제액 <b style="color:var(--text)">$450</b> — 아시아 평균 $154의 약 3배</span><span>~3x</span></div><div class="prog-bar"><div class="prog-fill" data-w="75"></div></div></div>
+        <div class="prog-row"><div class="prog-label"><span>주요 게임사 10곳 중 8곳, 자체 직판 채널 도입</span><span>~80%</span></div><div class="prog-bar"><div class="prog-fill" data-w="80"></div></div></div>
+        <div class="prog-row"><div class="prog-label"><span>iOS 결제 매출이 안드로이드보다 더 많다</span><span>+75%</span></div><div class="prog-bar"><div class="prog-fill" data-w="75"></div></div></div>
+        <div class="prog-row"><div class="prog-label"><span>자체 직판 매출, 시장 통계에서 빠져 있다</span><span>10~20%</span></div><div class="prog-bar"><div class="prog-fill" data-w="20"></div></div></div>
       </div>
     </div>
 
@@ -520,8 +586,8 @@
       <table>
         <thead><tr><th>지표 항목</th><th>2025~2026 데이터</th><th>비고</th></tr></thead>
         <tbody>
-          <tr><td>전체 게임 시장 매출 규모 <span class="pill orange" style="font-size:10px">수정</span></td><td><span class="pill green">~$146억 (2025)</span></td><td>Statista·Seoulz 최신치. $209.8B는 2022년 구형 예측치로 과대 추정</td></tr>
-          <tr><td>인구 대비 게이머 침투율 <span class="pill orange" style="font-size:10px">주석</span></td><td><span class="pill blue">57% (2025현재)</span></td><td>70%는 2030년 예측치(Statista). 기간 혼용 주의</td></tr>
+          <tr><td>전체 게임 시장 매출 규모 <span class="pill orange">수정</span></td><td><span class="pill green">~$146억 (2025)</span></td><td>Statista·Seoulz 최신치. $209.8B는 2022년 구형 예측치</td></tr>
+          <tr><td>인구 대비 게이머 침투율 <span class="pill orange">주석</span></td><td><span class="pill blue">57% (2025현재)</span></td><td>70%는 2030년 예측치(Statista)</td></tr>
           <tr><td>모바일 게이머 결제 유저 비중</td><td><span class="pill green">52%</span></td><td>아시아-태평양 평균 상회</td></tr>
           <tr><td>1인당 연간 게임 지출 (ARPU)</td><td><span class="pill orange">USD 450+</span></td><td>세계 최고 수준의 결제 밀도</td></tr>
           <tr><td>상위 게임 평균 세션 시간</td><td><span class="pill purple">119분</span></td><td>고도의 몰입형 루틴 형성</td></tr>
@@ -531,7 +597,7 @@
 
     <div class="info-card">
       <h4>📌 사용자 확보 비용(UA) 상승과 D2C 부상</h4>
-      <p>2024년 말부터 CPI가 사상 최고치를 경신하면서 넷마블, 엔씨소프트, 넥슨 등 한국의 '빅 3'는 웹 샵(Web Shop) 운영을 공식화했다. 이는 실제 매출이 분석 툴 측정치보다 10~20% 더 높게 형성되는 '데이터 언더 리포팅' 현상을 초래하고 있다.</p>
+      <p>2024년 말부터 CPI가 사상 최고치를 경신하면서 넷마블, 엔씨소프트, 넥슨 등 한국의 '빅 3'는 웹 샵(Web Shop) 운영을 공식화했다. 이는 실제 매출이 분석 툴 측정치보다 10~20% 더 높게 형성되는 현상을 초래하고 있다.</p>
     </div>
   </section>
 
@@ -557,8 +623,8 @@
         <tbody>
           <tr><td><span class="pill purple">Gen-Z</span> (1997~2012년생)</td><td>하이퍼캐주얼, 샌드박스(로블록스)</td><td>UGC 참여 및 사회적 표현 중시</td></tr>
           <tr><td><span class="pill blue">여성 게이머</span></td><td>퍼즐, 머지(Merge), 시뮬레이션</td><td>미적 요소와 서사적 완성도 중시</td></tr>
-          <tr><td><span class="pill orange">60대+ 실버 게이머</span></td><td>보드 게임, 단순 전략</td><td>짧은 세션의 반복, 인지 자극 목적</td></tr>
-          <tr><td><span class="pill green">미드코어 코어 게이머</span></td><td>4X 전략, 익스트랙션 슈터</td><td>길드 경쟁, 경제적 우위 선점 시도</td></tr>
+          <tr><td><span class="pill orange">60대+ 실버 게이머</span></td><td>보드 게임, 단순 전략</td><td>짧은 세션 반복, 인지 자극 목적</td></tr>
+          <tr><td><span class="pill green">미드코어 코어 게이머</span></td><td>4X 전략, 익스트랙션 슈터</td><td>길드 경쟁, 경제적 우위 선점</td></tr>
         </tbody>
       </table>
     </div>
@@ -574,7 +640,7 @@
       </div>
       <div class="info-card">
         <h4>💰 맥락적 결제</h4>
-        <p>단순 Pay-to-Win에서 '리더보드 사수, 길드 기여' 등 사회적 맥락이 부여될 때 IAP 활성화. 상위 1% 고관여 유저의 일상 루틴화.</p>
+        <p>단순 Pay-to-Win에서 '리더보드 사수, 길드 기여' 등 사회적 맥락이 부여될 때 결제 활성화. 상위 1% 고관여 유저의 일상 루틴화.</p>
       </div>
     </div>
   </section>
@@ -582,21 +648,21 @@
   <!-- SECTION 3 -->
   <section id="s3">
     <h3><span class="section-num">3</span> H5 게임 및 미니 프로그램 생태계의 폭발적 팽창</h3>
-    <p class="section-desc">다운로드 없는 접근성을 무기로 한 HTML5 미니 게임이 폭발적으로 성장 중. CAGR 17.4% (2035) ✅ 확인. 시장 규모는 기관별로 $1.41B~$6.02B로 편차가 크며 중간값 기준 $2.3B 수준.</p>
+    <p class="section-desc">다운로드 없는 접근성을 무기로 한 HTML5 미니 게임이 폭발적으로 성장 중. CAGR 17.4% (→2035) ✅ 확인. 시장 규모는 기관별로 $1.41B~$6.02B로 편차가 크며 중간값 기준 $2.3B 수준.</p>
 
-    <div style="background:rgba(247,160,79,.07);border:1px solid rgba(247,160,79,.25);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--text-muted)">
-      <strong style="color:var(--accent2)">⚠️ 데이터 주의</strong> — H5 게임 시장 규모는 조사기관별 편차가 매우 큼: BusinessResearchInsights <strong style="color:var(--text)">$1.41B</strong> / MarketGrowthReports <strong style="color:var(--text)">$2.29B</strong> / VerifiedMarket <strong style="color:var(--text)">$6.02B</strong>. 당초 인용 출처(globalgrowthinsights)는 "$1,051 Billion"이라는 명백한 수치 오기가 존재하여 출처 신뢰도에 문제가 있음. CAGR 17.4%는 복수 기관에서 확인됨.
+    <div style="background:rgba(247,160,79,.07);border:1px solid rgba(247,160,79,.25);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--text-muted);word-break:keep-all;line-height:1.7">
+      <strong style="color:var(--accent2)">⚠️ 데이터 주의</strong> — H5 게임 시장 규모는 조사기관별 편차가 매우 큼: BusinessResearchInsights <strong style="color:var(--text)">$1.41B</strong> / MarketGrowthReports <strong style="color:var(--text)">$2.29B</strong> / VerifiedMarket <strong style="color:var(--text)">$6.02B</strong>. 당초 인용 출처(globalgrowthinsights)는 "$1,051 Billion"이라는 명백한 수치 오기가 존재하여 신뢰도에 문제 있음. CAGR 17.4%는 복수 기관에서 확인됨.
     </div>
 
     <div class="chart-wrap">
-      <h4>H5 게임 시장 규모 전망 (2026~2035, 억 달러) — MarketGrowthReports 기준</h4>
+      <h4>H5 게임 시장 규모 전망 (2026~2035, $억) — MarketGrowthReports 기준</h4>
       <canvas id="chartH5Growth"></canvas>
     </div>
 
     <div class="platform-grid">
       <div class="plat-card">
         <div class="plat-icon" style="background:rgba(79,192,255,.1)">💬</div>
-        <div>
+        <div style="min-width:0">
           <h4>위챗 (WeChat)</h4>
           <p>IAP(MMO/SLG) + IAA. 앱 급의 깊이 있는 콘텐츠. 미니 프로그램 선두 플랫폼.</p>
           <div class="hit">대표작: Kingshot Mini, Last War</div>
@@ -604,7 +670,7 @@
       </div>
       <div class="plat-card">
         <div class="plat-icon" style="background:rgba(124,111,247,.1)">✈️</div>
-        <div>
+        <div style="min-width:0">
           <h4>텔레그램 (TON)</h4>
           <p>토큰 보상 + 소셜 의뢰. MAG 5억 명 돌파. Web3 기반 게임의 주류화 선도.</p>
           <div class="hit">대표작: Catizen, Hamster Kombat</div>
@@ -612,7 +678,7 @@
       </div>
       <div class="plat-card">
         <div class="plat-icon" style="background:rgba(247,112,106,.1)">🎵</div>
-        <div>
+        <div style="min-width:0">
           <h4>틱톡 (TikTok)</h4>
           <p>보상형 광고(IAA). 숏폼 알고리즘 기반 타겟팅. AR 기술 활용 혁신적 UX 제공.</p>
           <div class="hit">대표작: Hyper-casual AR titles</div>
@@ -620,7 +686,7 @@
       </div>
       <div class="plat-card">
         <div class="plat-icon" style="background:rgba(61,214,140,.1)">💚</div>
-        <div>
+        <div style="min-width:0">
           <h4>카카오 (Kakao)</h4>
           <p>소셜 관계망 활용, 친구 초대·랭킹 경쟁·이모지 보상으로 강력한 소셜 루프 형성.</p>
           <div class="hit">한국 유저 특화 리텐션 전략</div>
@@ -637,7 +703,7 @@
   <!-- SECTION 4 -->
   <section id="s4">
     <h3><span class="section-num">4</span> 최근 6개월 내 신규 흥행 게임의 성공 요인</h3>
-    <p class="section-desc">2025년 10월 ~ 2026년 4월 출시작. 공통적으로 '하이브리드 장르 설계'와 'AI 기반 개인화'가 핵심 동력.</p>
+    <p class="section-desc">2025년 10월 ~ 2026년 4월 출시작. '하이브리드 장르 설계'와 'AI 기반 개인화'가 공통 핵심 동력.</p>
 
     <div class="game-grid">
       <div class="game-card k1">
@@ -653,10 +719,10 @@
       </div>
       <div class="game-card k2">
         <div class="game-title">⚔️ 델타 포스 (Delta Force)</div>
-        <div class="game-dev">TiMi Studio (Tencent) · 5개월 $3억 매출 ✅ 교차검증 완료</div>
+        <div class="game-dev">TiMi Studio (Tencent) · 5개월 $3억 매출 ✅</div>
         <div class="wow-badge">Extraction Shooter Mode</div>
         <p>언리얼 엔진 5 기반 AAA급 품질을 모바일·PC·콘솔 동일 구현. 완벽한 크로스 플랫폼 매치메이킹. 'Hazard Operations' 익스트랙션 모드로 "타르코프의 대중화" 평가 획득.</p>
-        <p style="margin-top:10px;font-size:12px;color:var(--accent2);padding:8px 10px;background:rgba(247,160,79,.08);border-radius:6px;border-left:2px solid var(--accent2)">⚠️ 맥락 보완: $303.5M 매출 중 약 96%가 중국 내 매출. 글로벌 흥행보다는 중국 내 대형 히트로 해석이 정확함.</p>
+        <p style="margin-top:10px;font-size:12px;color:var(--accent2);padding:8px 10px;background:rgba(247,160,79,.08);border-radius:6px;border-left:2px solid var(--accent2);word-break:keep-all">⚠️ $303.5M 매출 중 약 96%가 중국 내 매출. 글로벌보다는 중국 내 대형 히트로 해석이 정확함.</p>
         <div class="metrics">
           <div class="m"><div class="mv">$3억</div><div class="mk">5개월 매출</div></div>
           <div class="m"><div class="mv">96% 중국</div><div class="mk">매출 구성</div></div>
@@ -665,7 +731,7 @@
       </div>
       <div class="game-card k3">
         <div class="game-title">🌌 카오스 제로 나이트메어 (CZN)</div>
-        <div class="game-dev">Smilegate · 바하무트 어워드 모바일 골드</div>
+        <div class="game-dev">Smilegate · 바하무트 어워드 모바일 골드 ✅</div>
         <div class="wow-badge">Seasonal Disaster Content</div>
         <p>독보적 고퀄리티 아트워크와 어두운 SF 세계관으로 서브컬처 수집 욕구 자극. 로그라이크 방식의 전략적 덱 빌딩 시스템. 유저 피드백 실시간 반영으로 라이브 운영 역량 증명.</p>
         <div class="metrics">
@@ -680,7 +746,7 @@
         <div class="wow-badge">Immersive Card Experience</div>
         <p>강력한 글로벌 IP와 '하루 2팩 무료 개봉'이라는 기다림의 미학. 카드 내부 일러스트로 빨려 들어가는 Immersive Card 연출로 시각적 경이로움 제공. 소셜 배틀로 오프라인 TCG 재미 이식.</p>
         <div class="metrics">
-          <div class="m"><div class="mv">Top 글로벌</div><div class="mk">매출 순위</div></div>
+          <div class="m"><div class="mv">글로벌 Top</div><div class="mk">매출 순위</div></div>
           <div class="m"><div class="mv">2팩/일</div><div class="mk">무료 개봉</div></div>
           <div class="m"><div class="mv">소셜</div><div class="mk">배틀 & 교환</div></div>
         </div>
@@ -699,8 +765,8 @@
         <ul>
           <li>WebAssembly(Wasm)로 H5 게임의 네이티브 앱 수준 성능 구현</li>
           <li>하이브리드 렌더링: 고사양 연산은 엣지 서버, 입력 처리는 로컬</li>
-          <li>저사양 스마트폰에서도 AAA급 그래픽 접근 가능 ('충실도의 민주화')</li>
-          <li>컨테이너화된 마이크로서비스로 무중단 마이크로 업데이트 구현</li>
+          <li>저사양 스마트폰에서도 AAA급 그래픽 접근 가능</li>
+          <li>컨테이너화된 마이크로서비스로 무중단 업데이트 구현</li>
         </ul>
       </div>
       <div class="info-card">
@@ -733,11 +799,11 @@
       <div>
         <div class="info-card" style="margin-bottom:16px">
           <h4>🧠 신경망 기반 UA 마케팅</h4>
-          <p>생성형 AI로 제작된 수천 가지 광고 크리에이티브 중 감정적 트리거 사전 예측. 고품질 LTV 유저 확보 비용 <strong style="color:var(--green)">20% 이상 절감</strong>. 유저의 Behavioral DNA 분석으로 맞춤형 도전 과제 제시.</p>
+          <p>생성형 AI로 제작된 수천 가지 광고 크리에이티브 중 감정적 트리거 사전 예측. 고품질 LTV 유저 확보 비용 <strong style="color:var(--green)">20% 이상 절감</strong>. 유저의 행동 데이터 분석으로 맞춤형 도전 과제 제시.</p>
         </div>
         <div class="info-card">
           <h4>🎨 생성형 AI 콘텐츠 가속화</h4>
-          <p>AAA급 모바일 개발 비용 급등 속에서 개발 공정의 <strong style="color:var(--green)">40% 이상 자동화</strong>. 수만 개 AI 봇으로 수억 번 시뮬레이션하여 게임 밸런스 최적화. 세션 시간 최대 <strong style="color:var(--green)">40% 연장</strong> 효과.</p>
+          <p>개발 공정의 <strong style="color:var(--green)">40% 이상 자동화</strong>. 수만 개 AI 봇으로 수억 번 시뮬레이션하여 게임 밸런스 최적화. 세션 시간 최대 <strong style="color:var(--green)">40% 연장</strong> 효과.</p>
         </div>
       </div>
     </div>
@@ -761,7 +827,7 @@
       </div>
       <div class="info-card">
         <h4>🌍 넷마블 (Netmarble)</h4>
-        <p style="margin-bottom:12px">해외 매출 비중 80%+ 유지. 한국 최성공 글로벌 모델.</p>
+        <p style="margin-bottom:12px">해외 매출 비중 80%+ 유지 ✅. 한국 최성공 글로벌 모델.</p>
         <ul>
           <li>웹툰·애니·영화 IP 게임 전환 역량 극대화</li>
           <li>'나 혼자만 레벨업' 서구권·아시아 동시 고성과</li>
@@ -860,16 +926,18 @@
 </main>
 
 <script>
-// === CHART CONFIG ===
 Chart.defaults.color = '#8b8fa8';
 Chart.defaults.borderColor = '#2e3148';
 const accent = '#7c6ff7', accent2 = '#f7a04f', accent3 = '#4fc0ff', green = '#3dd68c', red = '#f7706a';
+
+// 모바일 여부 판단
+const isMobile = () => window.innerWidth <= 640;
 
 // Chart 1: IAP comparison
 new Chart(document.getElementById('chartIAP'), {
   type: 'bar',
   data: {
-    labels: ['Google Play\n다운로드(억)', 'App Store\nIAP 매출 지수', 'App Store\n구글 대비'],
+    labels: ['Google Play 다운로드(억)', 'App Store IAP 매출지수', 'App Store 구글 대비'],
     datasets: [{
       label: '지표값',
       data: [420, 175, 75],
@@ -881,10 +949,11 @@ new Chart(document.getElementById('chartIAP'), {
   },
   options: {
     responsive: true,
+    maintainAspectRatio: true,
     plugins: { legend: { display: false } },
     scales: {
       y: { grid: { color: '#2e314855' } },
-      x: { grid: { display: false } }
+      x: { grid: { display: false }, ticks: { font: { size: isMobile() ? 10 : 12 }, maxRotation: 0 } }
     }
   }
 });
@@ -903,8 +972,18 @@ new Chart(document.getElementById('chartAudience'), {
   },
   options: {
     responsive: true,
-    scales: { r: { grid: { color: '#2e3148' }, ticks: { display: false }, pointLabels: { font: { size: 11 } } } },
-    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } } }
+    maintainAspectRatio: true,
+    layout: { padding: isMobile() ? 4 : 8 },
+    scales: {
+      r: {
+        grid: { color: '#2e3148' },
+        ticks: { display: false },
+        pointLabels: { font: { size: isMobile() ? 9 : 11 } }
+      }
+    },
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: isMobile() ? 10 : 11 }, padding: 10, boxWidth: 12 } }
+    }
   }
 });
 
@@ -922,8 +1001,9 @@ new Chart(document.getElementById('chartPayment'), {
   },
   options: {
     responsive: true,
+    maintainAspectRatio: true,
     plugins: {
-      legend: { position: 'bottom', labels: { padding: 16, font: { size: 12 } } },
+      legend: { position: 'bottom', labels: { padding: 14, font: { size: isMobile() ? 11 : 12 }, boxWidth: 12 } },
       tooltip: { callbacks: { label: ctx => ` ${ctx.label}` } }
     },
     cutout: '65%',
@@ -943,20 +1023,21 @@ new Chart(document.getElementById('chartH5Growth'), {
       fill: true,
       tension: 0.4,
       pointBackgroundColor: accent3,
-      pointRadius: 4,
+      pointRadius: isMobile() ? 3 : 4,
     }]
   },
   options: {
     responsive: true,
+    maintainAspectRatio: true,
     plugins: { legend: { display: false } },
     scales: {
-      y: { grid: { color: '#2e314855' }, ticks: { callback: v => '$' + v + '억' } },
-      x: { grid: { display: false } }
+      y: { grid: { color: '#2e314855' }, ticks: { callback: v => '$' + v, font: { size: isMobile() ? 10 : 12 } } },
+      x: { grid: { display: false }, ticks: { font: { size: isMobile() ? 10 : 12 } } }
     }
   }
 });
 
-// Chart 5: Hybrid ops effects
+// Chart 5: Hybrid ops (horizontal bar)
 new Chart(document.getElementById('chartHybrid'), {
   type: 'bar',
   data: {
@@ -965,21 +1046,22 @@ new Chart(document.getElementById('chartHybrid'), {
       label: '효과 지수 (추정)',
       data: [72, 88, 65, 78],
       backgroundColor: [accent + 'bb', accent3 + 'bb', accent2 + 'bb', green + 'bb'],
-      borderRadius: 8,
+      borderRadius: 6,
     }]
   },
   options: {
     indexAxis: 'y',
     responsive: true,
+    maintainAspectRatio: true,
     plugins: { legend: { display: false } },
     scales: {
-      x: { max: 100, grid: { color: '#2e314855' } },
-      y: { grid: { display: false } }
+      x: { max: 100, grid: { color: '#2e314855' }, ticks: { font: { size: isMobile() ? 10 : 12 } } },
+      y: { grid: { display: false }, ticks: { font: { size: isMobile() ? 10 : 12 } } }
     }
   }
 });
 
-// Chart 6: AI effects
+// Chart 6: AI effects (polar area)
 new Chart(document.getElementById('chartAI'), {
   type: 'polarArea',
   data: {
@@ -991,12 +1073,15 @@ new Chart(document.getElementById('chartAI'), {
   },
   options: {
     responsive: true,
-    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } } },
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: isMobile() ? 10 : 11 }, padding: 8, boxWidth: 12 } }
+    },
     scales: { r: { grid: { color: '#2e3148' }, ticks: { display: false } } }
   }
 });
 
-// Chart 7: Publisher market share
+// Chart 7: Publisher pie — legend bottom for all sizes
 new Chart(document.getElementById('chartPublisher'), {
   type: 'pie',
   data: {
@@ -1010,12 +1095,15 @@ new Chart(document.getElementById('chartPublisher'), {
   },
   options: {
     responsive: true,
-    plugins: { legend: { position: 'right', labels: { font: { size: 12 }, padding: 12 } } }
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: isMobile() ? 11 : 12 }, padding: 12, boxWidth: 12 } }
+    }
   }
 });
 
-// === PROGRESS BARS ===
-const observer = new IntersectionObserver((entries) => {
+// === PROGRESS BARS (scroll-triggered) ===
+const progObserver = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
       e.target.querySelectorAll('.prog-fill').forEach(bar => {
@@ -1023,20 +1111,17 @@ const observer = new IntersectionObserver((entries) => {
       });
     }
   });
-}, { threshold: 0.3 });
+}, { threshold: 0.2 });
 
-document.querySelectorAll('.chart-wrap').forEach(el => observer.observe(el));
-document.querySelectorAll('.prog-fill').forEach(bar => bar.style.width = '0%');
-
-// Trigger immediately for visible ones
+document.querySelectorAll('.chart-wrap').forEach(el => progObserver.observe(el));
+document.querySelectorAll('.prog-fill').forEach(bar => { bar.style.width = '0%'; });
 setTimeout(() => {
   document.querySelectorAll('.prog-fill').forEach(bar => {
-    const rect = bar.getBoundingClientRect();
-    if (rect.top < window.innerHeight) {
+    if (bar.getBoundingClientRect().top < window.innerHeight) {
       bar.style.width = bar.dataset.w + '%';
     }
   });
-}, 300);
+}, 400);
 
 // === ACTIVE NAV ===
 const sections = document.querySelectorAll('section[id]');
@@ -1044,12 +1129,12 @@ const navLinks = document.querySelectorAll('.nav-link');
 window.addEventListener('scroll', () => {
   let current = '';
   sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    if (window.scrollY >= s.offsetTop - 140) current = s.id;
   });
   navLinks.forEach(a => {
     a.classList.toggle('active', a.getAttribute('href') === '#' + current);
   });
-});
+}, { passive: true });
 
 // === SIDEBAR TOGGLE ===
 function toggleSidebar() {
