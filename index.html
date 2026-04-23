@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026년 모바일 & H5 게임 시장 분석</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232634;
+    --accent: #7c6ff7;
+    --accent2: #f7a04f;
+    --accent3: #4fc0ff;
+    --text: #e2e4ef;
+    --text-muted: #8b8fa8;
+    --border: #2e3148;
+    --green: #3dd68c;
+    --red: #f7706a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    display: flex;
+  }
+
+  /* === SIDEBAR === */
+  #sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0;
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform .3s;
+    padding-bottom: 40px;
+  }
+  .sidebar-logo {
+    padding: 28px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo .tag {
+    font-size: 10px;
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: .5px;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+  .sidebar-logo h1 {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .sidebar-logo .date { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  nav ul { list-style: none; padding: 12px 0; }
+  nav ul li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    transition: all .2s;
+  }
+  nav ul li a:hover, nav ul li a.active {
+    color: var(--text);
+    background: var(--surface2);
+    border-left-color: var(--accent);
+  }
+  nav ul li a .num {
+    width: 20px; height: 20px;
+    background: var(--surface2);
+    border-radius: 50%;
+    font-size: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  nav ul li a.active .num { background: var(--accent); color: #fff; }
+
+  /* === MAIN === */
+  #main {
+    margin-left: 260px;
+    flex: 1;
+    max-width: calc(100% - 260px);
+    padding: 0 40px 80px;
+  }
+
+  /* === HERO === */
+  .hero {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .hero .kicker {
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero h2 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 700px;
+    line-height: 1.8;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 40px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+  }
+  .stat-card .label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+  .stat-card .value { font-size: 26px; font-weight: 800; color: var(--text); }
+  .stat-card .sub { font-size: 11px; color: var(--green); margin-top: 4px; }
+
+  /* === SECTIONS === */
+  section { margin-bottom: 64px; }
+  section h3 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  section h3 .section-num {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .section-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    margin-left: 44px;
+  }
+
+  /* === CARDS GRID === */
+  .cards-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .cards-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .info-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--accent3);
+  }
+  .info-card p { font-size: 13px; color: var(--text-muted); line-height: 1.8; }
+  .info-card ul { list-style: none; }
+  .info-card ul li {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+  }
+  .info-card ul li:last-child { border: none; }
+  .info-card ul li::before { content: '›'; color: var(--accent); font-weight: 700; }
+
+  /* === CHART WRAPPERS === */
+  .chart-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .chart-wrap h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .chart-wrap canvas { max-height: 280px; }
+
+  /* === TABLES === */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--surface2); }
+  thead th {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+  tbody tr { border-top: 1px solid var(--border); transition: background .15s; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 14px 16px; color: var(--text); }
+  td .pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  td .pill.green { background: rgba(61,214,140,.15); color: var(--green); }
+  td .pill.blue { background: rgba(79,192,255,.15); color: var(--accent3); }
+  td .pill.purple { background: rgba(124,111,247,.15); color: var(--accent); }
+  td .pill.orange { background: rgba(247,160,79,.15); color: var(--accent2); }
+
+  /* === GAME CARDS === */
+  .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .game-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-card::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    opacity: .05;
+  }
+  .game-card.k1::after { background: var(--accent); }
+  .game-card.k2::after { background: var(--accent3); }
+  .game-card.k3::after { background: var(--accent2); }
+  .game-card.k4::after { background: var(--green); }
+  .game-card .game-title {
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .game-card .game-dev { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+  .game-card .wow-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(124,111,247,.15);
+    border: 1px solid rgba(124,111,247,.3);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .game-card .wow-badge::before { content: '⚡'; }
+  .game-card p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .game-card .metrics {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .game-card .metrics .m { text-align: center; }
+  .game-card .metrics .m .mv { font-size: 16px; font-weight: 700; color: var(--text); }
+  .game-card .metrics .m .mk { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  /* === PLATFORM CARDS === */
+  .platform-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
+  .plat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .plat-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .plat-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .plat-card p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+  .plat-card .hit { font-size: 11px; color: var(--accent2); margin-top: 8px; font-weight: 600; }
+
+  /* === STRATEGY LIST === */
+  .strategy-list { display: flex; flex-direction: column; gap: 12px; }
+  .strat-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .strat-num {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .strat-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .strat-item p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+  /* === FOOTER === */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  footer a { color: var(--accent3); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+  .ref-item {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .ref-item a { color: var(--text-muted); }
+  .ref-item a:hover { color: var(--accent3); }
+
+  /* === PROGRESS BAR === */
+  .prog-row { margin-bottom: 14px; }
+  .prog-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+  .prog-label span:first-child { color: var(--text); }
+  .prog-label span:last-child { color: var(--accent); font-weight: 700; }
+  .prog-bar { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .prog-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    width: 0;
+    transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* === TOGGLE BUTTON === */
+  #menu-toggle {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 200;
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 1024px) {
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); }
+    #main { margin-left: 0; max-width: 100%; padding: 0 20px 60px; }
+    #menu-toggle { display: flex; align-items: center; justify-content: center; }
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    .cards-2, .cards-3, .game-grid { grid-template-columns: 1fr; }
+    .platform-grid { grid-template-columns: 1fr; }
+    .ref-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .hero-stats { grid-template-columns: 1fr 1fr; }
+    .hero h2 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<button id="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <div class="tag">MARKET REPORT</div>
+    <h1>모바일 & H5 게임<br>시장 분석 2026</h1>
+    <div class="date">2026년 4월 23일 기준</div>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="#s1" class="nav-link"><span class="num">1</span> 모바일 시장 거시 지표</a></li>
+      <li><a href="#s2" class="nav-link"><span class="num">2</span> 사용자 행태 변화</a></li>
+      <li><a href="#s3" class="nav-link"><span class="num">3</span> H5 게임 생태계</a></li>
+      <li><a href="#s4" class="nav-link"><span class="num">4</span> 신규 흥행 게임 분석</a></li>
+      <li><a href="#s5" class="nav-link"><span class="num">5</span> 하이브리드 전략</a></li>
+      <li><a href="#s6" class="nav-link"><span class="num">6</span> AI 도입 혁신</a></li>
+      <li><a href="#s7" class="nav-link"><span class="num">7</span> 주요 퍼블리셔 전략</a></li>
+      <li><a href="#s8" class="nav-link"><span class="num">8</span> 결론 및 전망</a></li>
+      <li><a href="#refs" class="nav-link"><span class="num">✦</span> 참고 자료</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main id="main">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="kicker">GLOBAL GAME MARKET INTELLIGENCE · 2026</div>
+    <h2>2026년 모바일 및 H5 게임 시장의<br>구조적 전환과 신흥 흥행 모델 분석</h2>
+    <p>2026년 4월 현재, 글로벌 게임 산업은 기술적 임계점을 돌파하며 새로운 구조적 팽창기에 진입했다. 전통적인 앱 마켓 중심의 모바일 생태계와 H5 미니 게임 생태계가 융합하는 독특한 양상이 전개되고 있다.</p>
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="label">한국 게임 시장 규모 (2026)</div>
+        <div class="value">$209.8억</div>
+        <div class="sub">↑ CAGR 6.21% (2022~2026)</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">모바일 게이머 침투율</div>
+        <div class="value">57~70%</div>
+        <div class="sub">전체 인구 5,170만 명 기준</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">1인당 연간 게임 지출 (ARPU)</div>
+        <div class="value">$450+</div>
+        <div class="sub">세계 최고 수준의 결제 밀도</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">H5 게임 시장 규모 (2026)</div>
+        <div class="value">$22.9억</div>
+        <div class="sub">↑ CAGR 17.4% (→2035)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <section id="s1">
+    <h3><span class="section-num">1</span> 모바일 게임 시장의 거시적 역학 및 경제적 지표</h3>
+    <p class="section-desc">모바일 게임은 전체 매출의 60%를 차지하나, 설치량 정체와 IAP 상승이라는 상반된 역학이 공존한다.</p>
+
+    <div class="cards-2">
+      <div class="chart-wrap">
+        <h4>플랫폼별 IAP 매출 비교 (2025~2026)</h4>
+        <canvas id="chartIAP"></canvas>
+      </div>
+      <div>
+        <div class="chart-wrap">
+          <h4>주요 시장 지표</h4>
+          <div class="prog-row"><div class="prog-label"><span>모바일 게이머 결제 비중</span><span>52%</span></div><div class="prog-bar"><div class="prog-fill" data-w="52"></div></div></div>
+          <div class="prog-row"><div class="prog-label"><span>아시아-태평양 결제 평균 상회율</span><span>~65%</span></div><div class="prog-bar"><div class="prog-fill" data-w="65"></div></div></div>
+          <div class="prog-row"><div class="prog-label"><span>D2C 전략 전환 주요 업체 비중</span><span>~80%</span></div><div class="prog-bar"><div class="prog-fill" data-w="80"></div></div></div>
+          <div class="prog-row"><div class="prog-label"><span>앱스토어 IAP 매출 구글 대비 우위</span><span>75%</span></div><div class="prog-bar"><div class="prog-fill" data-w="75"></div></div></div>
+          <div class="prog-row"><div class="prog-label"><span>D2C 데이터 언더리포팅 추정치</span><span>10~20%</span></div><div class="prog-bar"><div class="prog-fill" data-w="20"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>지표 항목</th><th>2025~2026 데이터</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td>전체 게임 시장 매출 규모</td><td><span class="pill purple">~$146~$209억</span></td><td>2026년 예측치 포함</td></tr>
+          <tr><td>인구 대비 게이머 침투율</td><td><span class="pill blue">57~70%</span></td><td>전체 인구 약 5,170만 명 기준</td></tr>
+          <tr><td>모바일 게이머 결제 유저 비중</td><td><span class="pill green">52%</span></td><td>아시아-태평양 평균 상회</td></tr>
+          <tr><td>1인당 연간 게임 지출 (ARPU)</td><td><span class="pill orange">USD 450+</span></td><td>세계 최고 수준의 결제 밀도</td></tr>
+          <tr><td>상위 게임 평균 세션 시간</td><td><span class="pill purple">119분</span></td><td>고도의 몰입형 루틴 형성</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-card">
+      <h4>📌 사용자 확보 비용(UA) 상승과 D2C 부상</h4>
+      <p>2024년 말부터 CPI가 사상 최고치를 경신하면서 넷마블, 엔씨소프트, 넥슨 등 한국의 '빅 3'는 웹 샵(Web Shop) 운영을 공식화했다. 이는 실제 매출이 분석 툴 측정치보다 10~20% 더 높게 형성되는 '데이터 언더 리포팅' 현상을 초래하고 있다.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section id="s2">
+    <h3><span class="section-num">2</span> 사용자 이용 행태 및 오디언스 특성의 심층 변화</h3>
+    <p class="section-desc">경쟁 중심적 MMORPG 선호에서 사회적 가치와 개인화된 경험의 조화로 진화하고 있다.</p>
+
+    <div class="cards-2">
+      <div class="chart-wrap">
+        <h4>오디언스 그룹별 관여도 분포</h4>
+        <canvas id="chartAudience"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <h4>결제 유저 비중 (2026 한국)</h4>
+        <canvas id="chartPayment"></canvas>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>오디언스 그룹</th><th>주요 선호 장르</th><th>이용 행태 특징</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill purple">Gen-Z</span> (1997~2012년생)</td><td>하이퍼캐주얼, 샌드박스(로블록스)</td><td>UGC 참여 및 사회적 표현 중시</td></tr>
+          <tr><td><span class="pill blue">여성 게이머</span></td><td>퍼즐, 머지(Merge), 시뮬레이션</td><td>미적 요소와 서사적 완성도 중시</td></tr>
+          <tr><td><span class="pill orange">60대+ 실버 게이머</span></td><td>보드 게임, 단순 전략</td><td>짧은 세션의 반복, 인지 자극 목적</td></tr>
+          <tr><td><span class="pill green">미드코어 코어 게이머</span></td><td>4X 전략, 익스트랙션 슈터</td><td>길드 경쟁, 경제적 우위 선점 시도</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cards-3">
+      <div class="info-card">
+        <h4>👩 여성 게이머 확대</h4>
+        <p>2025년 한국 여성 게이머는 캐주얼/퍼즐 RPG에서 압도적 구매력. 인도·중동에서도 여성 게이머 40% 돌파로 전 세계적 현상.</p>
+      </div>
+      <div class="info-card">
+        <h4>👴 실버 게이머 부상</h4>
+        <p>60세 이상 인구의 28%가 정기적으로 모바일 게임 이용. 복잡한 컨트롤보다 전략적 사고 요구 게임 선호.</p>
+      </div>
+      <div class="info-card">
+        <h4>💰 맥락적 결제</h4>
+        <p>단순 Pay-to-Win에서 '리더보드 사수, 길드 기여' 등 사회적 맥락이 부여될 때 IAP 활성화. 상위 1% 고관여 유저의 일상 루틴화.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section id="s3">
+    <h3><span class="section-num">3</span> H5 게임 및 미니 프로그램 생태계의 폭발적 팽창</h3>
+    <p class="section-desc">다운로드 없는 접근성을 무기로 한 HTML5 미니 게임이 2026년 22.9억 달러 규모로 성장하며 17.4% CAGR 전망.</p>
+
+    <div class="chart-wrap">
+      <h4>H5 게임 시장 규모 전망 (2026~2035, 억 달러)</h4>
+      <canvas id="chartH5Growth"></canvas>
+    </div>
+
+    <div class="platform-grid">
+      <div class="plat-card">
+        <div class="plat-icon" style="background:rgba(79,192,255,.1)">💬</div>
+        <div>
+          <h4>위챗 (WeChat)</h4>
+          <p>IAP(MMO/SLG) + IAA. 앱 급의 깊이 있는 콘텐츠. 미니 프로그램 선두 플랫폼.</p>
+          <div class="hit">대표작: Kingshot Mini, Last War</div>
+        </div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-icon" style="background:rgba(124,111,247,.1)">✈️</div>
+        <div>
+          <h4>텔레그램 (TON)</h4>
+          <p>토큰 보상 + 소셜 의뢰. MAG 5억 명 돌파. Web3 기반 게임의 주류화 선도.</p>
+          <div class="hit">대표작: Catizen, Hamster Kombat</div>
+        </div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-icon" style="background:rgba(247,112,106,.1)">🎵</div>
+        <div>
+          <h4>틱톡 (TikTok)</h4>
+          <p>보상형 광고(IAA). 숏폼 알고리즘 기반 타겟팅. AR 기술 활용 혁신적 UX 제공.</p>
+          <div class="hit">대표작: Hyper-casual AR titles</div>
+        </div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-icon" style="background:rgba(61,214,140,.1)">💚</div>
+        <div>
+          <h4>카카오 (Kakao)</h4>
+          <p>소셜 관계망 활용, 친구 초대·랭킹 경쟁·이모지 보상으로 강력한 소셜 루프 형성.</p>
+          <div class="hit">한국 유저 특화 리텐션 전략</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h4>🔀 하이브리드 배포 전략: 미니 게임 → 네이티브 앱 전환율 35%↑</h4>
+      <p>상위 20개 신규 타이틀 중 22.9%의 매출이 미니 프로그램 버전에서 발생. 4X/SLG 장르에서 미니 게임 튜토리얼을 통한 전환율 35% 이상 개선 사례 다수 확인.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section id="s4">
+    <h3><span class="section-num">4</span> 최근 6개월 내 신규 흥행 게임의 성공 요인</h3>
+    <p class="section-desc">2025년 10월 ~ 2026년 4월 출시작. 공통적으로 '하이브리드 장르 설계'와 'AI 기반 개인화'가 핵심 동력.</p>
+
+    <div class="game-grid">
+      <div class="game-card k1">
+        <div class="game-title">👑 킹샷 (Kingshot)</div>
+        <div class="game-dev">Century Games · 글로벌 매출 차트 8위권</div>
+        <div class="wow-badge">Light Entry, Deep Core</div>
+        <p>캐주얼한 광고 소재(퍼즐·생존 미니게임)로 유저를 유입한 뒤, 실제 내부에는 깊이 있는 4X 전략과 길드 경쟁을 배치. 저관여 유저가 KvK 전투에서 소외되지 않는 정교한 보상 시스템이 핵심.</p>
+        <div class="metrics">
+          <div class="m"><div class="mv">TOP 8</div><div class="mk">한국 매출 순위</div></div>
+          <div class="m"><div class="mv">SLG+</div><div class="mk">장르 모델</div></div>
+          <div class="m"><div class="mv">35%↑</div><div class="mk">전환율 개선</div></div>
+        </div>
+      </div>
+      <div class="game-card k2">
+        <div class="game-title">⚔️ 델타 포스 (Delta Force)</div>
+        <div class="game-dev">TiMi Studio (Tencent) · 5개월 $3억 매출</div>
+        <div class="wow-badge">Extraction Shooter Mode</div>
+        <p>언리얼 엔진 5 기반 AAA급 품질을 모바일·PC·콘솔 동일 구현. 완벽한 크로스 플랫폼 매치메이킹. 'Hazard Operations' 익스트랙션 모드로 "타르코프의 대중화" 평가 획득.</p>
+        <div class="metrics">
+          <div class="m"><div class="mv">$3억</div><div class="mk">5개월 매출</div></div>
+          <div class="m"><div class="mv">3플랫폼</div><div class="mk">크로스플레이</div></div>
+          <div class="m"><div class="mv">UE5</div><div class="mk">엔진</div></div>
+        </div>
+      </div>
+      <div class="game-card k3">
+        <div class="game-title">🌌 카오스 제로 나이트메어 (CZN)</div>
+        <div class="game-dev">Smilegate · 바하무트 어워드 모바일 골드</div>
+        <div class="wow-badge">Seasonal Disaster Content</div>
+        <p>독보적 고퀄리티 아트워크와 어두운 SF 세계관으로 서브컬처 수집 욕구 자극. 로그라이크 방식의 전략적 덱 빌딩 시스템. 유저 피드백 실시간 반영으로 라이브 운영 역량 증명.</p>
+        <div class="metrics">
+          <div class="m"><div class="mv">Gold</div><div class="mk">바하무트 어워드</div></div>
+          <div class="m"><div class="mv">Roguelike</div><div class="mk">전투 시스템</div></div>
+          <div class="m"><div class="mv">Seasonal</div><div class="mk">업데이트</div></div>
+        </div>
+      </div>
+      <div class="game-card k4">
+        <div class="game-title">🃏 포켓몬 TCG 포켓</div>
+        <div class="game-dev">The Pokémon Company · 글로벌 매출 상위 유지</div>
+        <div class="wow-badge">Immersive Card Experience</div>
+        <p>강력한 글로벌 IP와 '하루 2팩 무료 개봉'이라는 기다림의 미학. 카드 내부 일러스트로 빨려 들어가는 Immersive Card 연출로 시각적 경이로움 제공. 소셜 배틀로 오프라인 TCG 재미 이식.</p>
+        <div class="metrics">
+          <div class="m"><div class="mv">Top 글로벌</div><div class="mk">매출 순위</div></div>
+          <div class="m"><div class="mv">2팩/일</div><div class="mk">무료 개봉</div></div>
+          <div class="m"><div class="mv">소셜</div><div class="mk">배틀 & 교환</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5 -->
+  <section id="s5">
+    <h3><span class="section-num">5</span> 모바일과 H5 시장의 교집합: 하이브리드 전략</h3>
+    <p class="section-desc">WebAssembly와 클라우드 네이티브 렌더링이 '충실도의 민주화'를 실현하며 두 생태계를 융합하고 있다.</p>
+
+    <div class="cards-2">
+      <div class="info-card">
+        <h4>⚙️ 기술적 교집합</h4>
+        <ul>
+          <li>WebAssembly(Wasm)로 H5 게임의 네이티브 앱 수준 성능 구현</li>
+          <li>하이브리드 렌더링: 고사양 연산은 엣지 서버, 입력 처리는 로컬</li>
+          <li>저사양 스마트폰에서도 AAA급 그래픽 접근 가능 ('충실도의 민주화')</li>
+          <li>컨테이너화된 마이크로서비스로 무중단 마이크로 업데이트 구현</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h4>📊 운영적 교집합: AI 기반 통합 유저 관리</h4>
+        <ul>
+          <li>교차 로그인 보상: 미니 게임 접속 시 네이티브 앱 아이템 증정</li>
+          <li>통합 AI 추천 엔진: 양 플랫폼 데이터 분석으로 맞춤 상품 제안</li>
+          <li>바이럴 루프: 미니 게임 공유 기능을 앱 유저 획득 채널로 활용</li>
+          <li>실시간 크로스 채팅: 플랫폼 간 소통 및 길드 관리 지원</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <h4>하이브리드 운영 요소별 효과</h4>
+      <canvas id="chartHybrid"></canvas>
+    </div>
+  </section>
+
+  <!-- SECTION 6 -->
+  <section id="s6">
+    <h3><span class="section-num">6</span> 인공지능(AI)의 전면 도입과 게임 산업 운영 혁신</h3>
+    <p class="section-desc">2026년은 AI가 개발 보조 도구를 넘어 게임의 코어 엔진과 운영 시스템에 완전히 통합된 첫 해.</p>
+
+    <div class="cards-2">
+      <div class="chart-wrap">
+        <h4>AI 적용 분야별 효과 (추정)</h4>
+        <canvas id="chartAI"></canvas>
+      </div>
+      <div>
+        <div class="info-card" style="margin-bottom:16px">
+          <h4>🧠 신경망 기반 UA 마케팅</h4>
+          <p>생성형 AI로 제작된 수천 가지 광고 크리에이티브 중 감정적 트리거 사전 예측. 고품질 LTV 유저 확보 비용 <strong style="color:var(--green)">20% 이상 절감</strong>. 유저의 Behavioral DNA 분석으로 맞춤형 도전 과제 제시.</p>
+        </div>
+        <div class="info-card">
+          <h4>🎨 생성형 AI 콘텐츠 가속화</h4>
+          <p>AAA급 모바일 개발 비용 급등 속에서 개발 공정의 <strong style="color:var(--green)">40% 이상 자동화</strong>. 수만 개 AI 봇으로 수억 번 시뮬레이션하여 게임 밸런스 최적화. 세션 시간 최대 <strong style="color:var(--green)">40% 연장</strong> 효과.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 7 -->
+  <section id="s7">
+    <h3><span class="section-num">7</span> 주요 게임 퍼블리셔들의 2026년 전략적 행보</h3>
+    <p class="section-desc">한국과 중국의 거대 퍼블리셔들이 성숙한 시장에 대응하기 위해 각기 다른 전략적 포지셔닝을 취하고 있다.</p>
+
+    <div class="cards-3">
+      <div class="info-card">
+        <h4>🏢 엔씨소프트 (NCSoft)</h4>
+        <p style="margin-bottom:12px">2030년 매출 5조 원 목표 '3대 핵심 성장 전략' 발표.</p>
+        <ul>
+          <li>글로벌 30% 차지 캐주얼 장르를 신성장동력으로 낙점</li>
+          <li>유럽·동남아 스튜디오 인수, '모바일 캐주얼 센터' 가동</li>
+          <li>리니지·아이온 IP의 캐주얼 스핀오프 확장</li>
+          <li>콘솔 타겟 Throne and Liberty, Project LLL 글로벌화</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h4>🌍 넷마블 (Netmarble)</h4>
+        <p style="margin-bottom:12px">해외 매출 비중 80%+ 유지. 한국 최성공 글로벌 모델.</p>
+        <ul>
+          <li>웹툰·애니·영화 IP 게임 전환 역량 극대화</li>
+          <li>'나 혼자만 레벨업' 서구권·아시아 동시 고성과</li>
+          <li>SpinX 소셜 카지노 노하우를 RPG 리텐션 엔진에 이식</li>
+          <li>AI 기반 유저 결제 심리 과학적 관리</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h4>🐧 텐센트 & 중국 퍼블리셔</h4>
+        <p style="margin-bottom:12px">한국 시장의 25%+ 점유. 트렌드 세터로 군림.</p>
+        <ul>
+          <li>주 단위 콘텐츠·이벤트 업데이트 압도적 운영 속도</li>
+          <li>틱톡·위챗 연동 바이럴 마케팅 효율 극대화</li>
+          <li>라스트 워, 화이트아웃 서바이벌 등 매출 상위 독점</li>
+          <li>캐주얼 광고+하드코어 전략 하이브리드 설계 완성</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <h4>한국 게임 시장 주요 퍼블리셔 점유율 (추정)</h4>
+      <canvas id="chartPublisher"></canvas>
+    </div>
+  </section>
+
+  <!-- SECTION 8 -->
+  <section id="s8">
+    <h3><span class="section-num">8</span> 결론 및 향후 전망</h3>
+    <p class="section-desc">성공하는 게임의 정의는 '지능형 서비스'로 진화. 2026년 하반기 앰비언트 게이밍의 등장 예고.</p>
+
+    <div class="strategy-list">
+      <div class="strat-item">
+        <div class="strat-num">1</div>
+        <div>
+          <h4>플랫폼 Agnostic 접근</h4>
+          <p>유저가 모바일 앱, 웹 브라우저, 콘솔, PC 등 어떤 환경에서도 동일한 진행도를 유지하며 접속할 수 있는 기술적 인프라(Wasm, Cloud Rendering)를 구축해야 한다.</p>
+        </div>
+      </div>
+      <div class="strat-item">
+        <div class="strat-num">2</div>
+        <div>
+          <h4>하이브리드 장르 설계 (Light Entry, Deep Core)</h4>
+          <p>유입 장벽은 하이퍼캐주얼 수준으로 낮추되, 수익화는 미드코어 급의 메타 시스템을 통해 실현하는 모델의 내재화가 필수적이다.</p>
+        </div>
+      </div>
+      <div class="strat-item">
+        <div class="strat-num">3</div>
+        <div>
+          <h4>데이터 주권과 D2C 채널 확보</h4>
+          <p>앱 마켓 정책 변화에 흔들리지 않도록 자체 유저 데이터 플랫폼과 직접 결제 시스템을 구축하여 수익성 방어 및 유저 LTV를 정밀하게 관리해야 한다.</p>
+        </div>
+      </div>
+      <div class="strat-item">
+        <div class="strat-num">4</div>
+        <div>
+          <h4>AI 중심의 조직 체계 개편</h4>
+          <p>단순한 도구 도입을 넘어, 기획-아트-QA-마케팅 전 과정에 AI가 개입하여 생산 비용을 낮추고 고도화된 개인화 서비스를 제공할 수 있는 운영 조직으로 전환이 시급하다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card" style="margin-top:20px; border-color:rgba(124,111,247,.3)">
+      <h4>🔮 2026년 하반기 전망: 앰비언트 게이밍 (Ambient Gaming)</h4>
+      <p>공간 컴퓨팅(Spatial Computing)과 혼합 현실(MR) 기술이 H5 게임 생태계와 결합하면서, 거실의 벽면이나 사무실 책상이 게임의 전장이 되는 새로운 형태의 앰비언트 게이밍이 등장할 것으로 예측된다. 변화의 속도는 더욱 빨라질 것이며, 데이터와 기술에 기반한 민첩한 대응만이 지속 가능한 성장을 담보할 수 있다.</p>
+    </div>
+  </section>
+
+  <!-- REFERENCES -->
+  <section id="refs">
+    <h3><span class="section-num" style="font-size:16px">✦</span> 참고 자료</h3>
+    <p class="section-desc">본 보고서는 51개 주요 외부 자료를 기반으로 작성되었습니다.</p>
+    <div class="ref-grid">
+      <div class="ref-item"><strong>[1]</strong> <a href="https://www.researchandmarkets.com/reports/5581803/korean-gaming-market-mobile-pc-and-console" target="_blank">Korean Gaming Market Insights & Forecast (2022-2026)</a></div>
+      <div class="ref-item"><strong>[2]</strong> <a href="https://alconost.com/en/blog/the-korean-game-market-a-comprehensive-overview" target="_blank">The Korean Game Market: A Comprehensive Overview 2026</a></div>
+      <div class="ref-item"><strong>[3]</strong> <a href="https://awnchina.cn/2026-outlook-for-the-south-korean-game-market-deepening-ip-value-category-diversification-and-a-new-global-competitive-landscape/" target="_blank">2026 Outlook for the South Korean Game Market</a></div>
+      <div class="ref-item"><strong>[4]</strong> <a href="https://www.globalgamesforum.com/podcasts/state-of-gaming-heres-what-the-mobile-data-actually-says" target="_blank">State of Gaming 2026 Mobile Gaming Data</a></div>
+      <div class="ref-item"><strong>[5]</strong> <a href="https://www.bigabid.com/mobile-gaming-trends-2026/" target="_blank">Mobile Gaming Trends 2026: Neural Networks & AI</a></div>
+      <div class="ref-item"><strong>[6]</strong> <a href="https://sensortower.com/ko/blog/state-of-gaming-2026-KR" target="_blank">Sensor Tower: 2026년 게임 현황</a></div>
+      <div class="ref-item"><strong>[7]</strong> <a href="https://games.gg/news/korean-mobile-gamer-insights-2026/" target="_blank">Korean Mobile Gamer Insights 2026</a></div>
+      <div class="ref-item"><strong>[8]</strong> <a href="https://www.forbes.com/councils/forbestechcouncil/2026/04/16/three-trends-shaping-the-gaming-industry-in-2026/" target="_blank">Forbes: Three Trends Shaping Gaming Industry 2026</a></div>
+      <div class="ref-item"><strong>[9]</strong> <a href="https://www.singular.net/ko/blog/top-mobile-games/" target="_blank">2026년 최고의 모바일 게임 (Singular)</a></div>
+      <div class="ref-item"><strong>[13]</strong> <a href="https://www.globalgrowthinsights.com/market-reports/h5-games-market-102611" target="_blank">H5 Games Market Size & Trends 2035</a></div>
+      <div class="ref-item"><strong>[14]</strong> <a href="https://blog.solar-engine.com/en-blog/docs/china-game-market-2026-strategic-shifts-solarengine" target="_blank">China's 2026 Game Market: Three Strategic Shifts</a></div>
+      <div class="ref-item"><strong>[18]</strong> <a href="https://www.bitdeal.net/telegram-gaming-in-2026" target="_blank">Telegram Gaming Platform Trends 2026 (Bitdeal)</a></div>
+      <div class="ref-item"><strong>[26]</strong> <a href="https://sensortower.com/blog/top-10-worldwide-mobile-games-by-revenue-and-downloads-in-october-2025" target="_blank">Sensor Tower Top 10 Mobile Games - Oct 2025</a></div>
+      <div class="ref-item"><strong>[32]</strong> <a href="https://www.pocketgamer.biz/tencent-eyes-global-shooter-dominance-after-delta-force-success/" target="_blank">Tencent eyes global shooter dominance (PocketGamer)</a></div>
+      <div class="ref-item"><strong>[36]</strong> <a href="https://newsroom.smilegate.com/en/eng/1768978508" target="_blank">Chaos Zero Nightmare Wins Bahamut Gold Award</a></div>
+      <div class="ref-item"><strong>[43]</strong> <a href="https://www.nc.com/newsroom/news/articles/?articleId=69b228ac091d780badf85df4&boardLanguage=en" target="_blank">NCSOFT: Three Core Growth Strategies to 2030</a></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>본 보고서는 공개 데이터 및 시장 조사 자료를 기반으로 작성되었습니다. 2026년 4월 23일 기준.</p>
+    <p style="margin-top:8px">생성: Claude (Anthropic) · <a href="https://github.com/JerrySeo78" target="_blank">@JerrySeo78</a></p>
+  </footer>
+</main>
+
+<script>
+// === CHART CONFIG ===
+Chart.defaults.color = '#8b8fa8';
+Chart.defaults.borderColor = '#2e3148';
+const accent = '#7c6ff7', accent2 = '#f7a04f', accent3 = '#4fc0ff', green = '#3dd68c', red = '#f7706a';
+
+// Chart 1: IAP comparison
+new Chart(document.getElementById('chartIAP'), {
+  type: 'bar',
+  data: {
+    labels: ['Google Play\n다운로드(억)', 'App Store\nIAP 매출 지수', 'App Store\n구글 대비'],
+    datasets: [{
+      label: '지표값',
+      data: [420, 175, 75],
+      backgroundColor: [accent3 + '99', accent + '99', green + '99'],
+      borderColor: [accent3, accent, green],
+      borderWidth: 1.5,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { grid: { color: '#2e314855' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// Chart 2: Audience radar
+new Chart(document.getElementById('chartAudience'), {
+  type: 'radar',
+  data: {
+    labels: ['결제 의향', '세션 시간', '소셜 참여', '장르 다양성', '재방문율'],
+    datasets: [
+      { label: 'Gen-Z', data: [60, 85, 90, 80, 75], borderColor: accent, backgroundColor: accent + '22', pointBackgroundColor: accent },
+      { label: '여성 게이머', data: [75, 65, 70, 65, 85], borderColor: accent3, backgroundColor: accent3 + '22', pointBackgroundColor: accent3 },
+      { label: '실버 게이머', data: [50, 50, 55, 40, 80], borderColor: accent2, backgroundColor: accent2 + '22', pointBackgroundColor: accent2 },
+      { label: '미드코어', data: [90, 95, 80, 85, 90], borderColor: green, backgroundColor: green + '22', pointBackgroundColor: green },
+    ]
+  },
+  options: {
+    responsive: true,
+    scales: { r: { grid: { color: '#2e3148' }, ticks: { display: false }, pointLabels: { font: { size: 11 } } } },
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } } }
+  }
+});
+
+// Chart 3: Payment donut
+new Chart(document.getElementById('chartPayment'), {
+  type: 'doughnut',
+  data: {
+    labels: ['결제 유저 (52%)', '비결제 유저 (48%)'],
+    datasets: [{
+      data: [52, 48],
+      backgroundColor: [accent + 'cc', '#2e3148'],
+      borderColor: ['transparent', 'transparent'],
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 16, font: { size: 12 } } },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.label}` } }
+    },
+    cutout: '65%',
+  }
+});
+
+// Chart 4: H5 growth
+new Chart(document.getElementById('chartH5Growth'), {
+  type: 'line',
+  data: {
+    labels: ['2026', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035'],
+    datasets: [{
+      label: 'H5 게임 시장 규모 ($억)',
+      data: [22.9, 26.9, 31.6, 37.1, 43.5, 51.1, 60.0, 70.4, 82.7, 97.1],
+      borderColor: accent3,
+      backgroundColor: accent3 + '18',
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: accent3,
+      pointRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { grid: { color: '#2e314855' }, ticks: { callback: v => '$' + v + '억' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// Chart 5: Hybrid ops effects
+new Chart(document.getElementById('chartHybrid'), {
+  type: 'bar',
+  data: {
+    labels: ['교차 로그인 보상', '통합 AI 추천 엔진', '바이럴 루프 설계', '실시간 크로스 채팅'],
+    datasets: [{
+      label: '효과 지수 (추정)',
+      data: [72, 88, 65, 78],
+      backgroundColor: [accent + 'bb', accent3 + 'bb', accent2 + 'bb', green + 'bb'],
+      borderRadius: 8,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { max: 100, grid: { color: '#2e314855' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// Chart 6: AI effects
+new Chart(document.getElementById('chartAI'), {
+  type: 'polarArea',
+  data: {
+    labels: ['UA 비용 절감 20%', '개발 공정 자동화 40%', '세션 연장 40%', 'QA 속도 향상', '개인화 콘텐츠'],
+    datasets: [{
+      data: [20, 40, 40, 35, 50],
+      backgroundColor: [accent + '88', accent3 + '88', green + '88', accent2 + '88', red + '88'],
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } } },
+    scales: { r: { grid: { color: '#2e3148' }, ticks: { display: false } } }
+  }
+});
+
+// Chart 7: Publisher market share
+new Chart(document.getElementById('chartPublisher'), {
+  type: 'pie',
+  data: {
+    labels: ['텐센트 등 중국 업체', '넥슨', '넷마블', '엔씨소프트', '컴투스/게임빌', '기타'],
+    datasets: [{
+      data: [25, 18, 16, 14, 8, 19],
+      backgroundColor: [accent + 'cc', accent3 + 'cc', green + 'cc', accent2 + 'cc', red + 'cc', '#8b8fa8cc'],
+      borderColor: 'transparent',
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'right', labels: { font: { size: 12 }, padding: 12 } } }
+  }
+});
+
+// === PROGRESS BARS ===
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.prog-fill').forEach(bar => {
+        bar.style.width = bar.dataset.w + '%';
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.chart-wrap').forEach(el => observer.observe(el));
+document.querySelectorAll('.prog-fill').forEach(bar => bar.style.width = '0%');
+
+// Trigger immediately for visible ones
+setTimeout(() => {
+  document.querySelectorAll('.prog-fill').forEach(bar => {
+    const rect = bar.getBoundingClientRect();
+    if (rect.top < window.innerHeight) {
+      bar.style.width = bar.dataset.w + '%';
+    }
+  });
+}, 300);
+
+// === ACTIVE NAV ===
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// === SIDEBAR TOGGLE ===
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const sidebar = document.getElementById('sidebar');
+  if (!sidebar.contains(e.target) && !e.target.closest('#menu-toggle')) {
+    sidebar.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
