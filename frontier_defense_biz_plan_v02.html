@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사업기획서 — AI-Native 게임 개발 파이프라인</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
+  /* ── 라이트 테마 (기본) ── */
   :root {
     --navy: #0d1b2a;
     --navy-mid: #1a2e45;
@@ -18,13 +19,35 @@
     --border: #d0dae6;
     --bg: #f7f9fc;
     --white: #ffffff;
-    --go: #1a7f4b;
-    --go-bg: #e8f7ef;
-    --stop: #c0392b;
-    --stop-bg: #fbeaea;
-    --d15: #f4631e;
+    --card-bg: #ffffff;
+    --go: #1a7f4b; --go-bg: #e8f7ef;
+    --stop: #c0392b; --stop-bg: #fbeaea;
     --d15-bg: #fff0e8;
     --sidebar-w: 240px;
+    --code-bg: #0d1b2a;
+    --code-color: #c8e8d8;
+    --summary-bg: #0d1b2a;
+    --summary-color: #c8d8e8;
+    --cross-bg: #0d1b2a;
+    --portfolio-bg: #0d1b2a;
+  }
+
+  /* ── 다크 테마 ── */
+  [data-theme="dark"] {
+    --bg: #111827;
+    --white: #1f2937;
+    --card-bg: #1f2937;
+    --text: #e5e7eb;
+    --text-light: #9ca3af;
+    --border: #374151;
+    --orange-pale: #3a2010;
+    --go-bg: #0d2d1a; --stop-bg: #2d0d0d; --d15-bg: #3a2010;
+    --code-bg: #0a0f1a;
+    --code-color: #93e8c4;
+    --summary-bg: #0a1520;
+    --summary-color: #c8d8e8;
+    --cross-bg: #0a1520;
+    --portfolio-bg: #0a1520;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,709 +58,485 @@
     color: var(--text);
     font-size: 14px;
     line-height: 1.75;
+    transition: background 0.25s, color 0.25s;
   }
 
-  /* Progress bar */
+  /* ── 진행 바 ── */
   #progress-bar {
-    position: fixed;
-    top: 0; left: 0;
-    height: 3px;
-    width: 0%;
+    position: fixed; top: 0; left: 0;
+    height: 3px; width: 0%;
     background: var(--orange);
     z-index: 1000;
     transition: width 0.1s;
   }
 
-  /* Sidebar */
-  #sidebar {
+  /* ── 툴바 (우상단) ── */
+  #toolbar {
     position: fixed;
-    top: 0; left: 0;
-    width: var(--sidebar-w);
-    height: 100vh;
+    top: 12px; right: 16px;
+    z-index: 500;
+    display: flex;
+    gap: 8px;
+  }
+
+  .tb-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 7px 14px;
+    border: none;
+    border-radius: 20px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+
+  #theme-btn {
+    background: var(--white);
+    color: var(--text);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  #theme-btn:hover { background: var(--bg); }
+
+  #slide-btn {
+    background: var(--navy);
+    color: #e8f0f8;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  #slide-btn:hover { background: var(--navy-mid); }
+
+  #pdf-btn {
+    background: var(--orange);
+    color: white;
+    box-shadow: 0 1px 4px rgba(244,99,30,0.35);
+  }
+  #pdf-btn:hover { background: var(--orange-light); }
+
+  /* ── 사이드바 ── */
+  #sidebar {
+    position: fixed; top: 0; left: 0;
+    width: var(--sidebar-w); height: 100vh;
     background: var(--navy);
     color: #c8d8e8;
     overflow-y: auto;
     z-index: 100;
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
   }
 
   #sidebar-header {
     padding: 28px 20px 20px;
     border-bottom: 1px solid var(--navy-light);
   }
-
   #sidebar-header .doc-label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--orange);
-    margin-bottom: 6px;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 6px;
   }
-
   #sidebar-header h2 {
-    font-size: 13px;
-    font-weight: 700;
-    color: #e8f0f8;
-    line-height: 1.4;
+    font-size: 13px; font-weight: 700;
+    color: #e8f0f8; line-height: 1.4;
   }
-
   #sidebar-header .version {
-    margin-top: 6px;
-    font-size: 11px;
-    color: #8aa0b8;
+    margin-top: 6px; font-size: 11px; color: #8aa0b8;
   }
 
-  nav {
-    padding: 16px 0;
-    flex: 1;
-  }
-
+  nav { padding: 16px 0; flex: 1; }
   nav a {
-    display: block;
-    padding: 7px 20px;
-    color: #8aa0b8;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 400;
+    display: block; padding: 7px 20px;
+    color: #8aa0b8; text-decoration: none;
+    font-size: 12px; font-weight: 400;
     transition: all 0.15s;
     border-left: 3px solid transparent;
     line-height: 1.4;
   }
-
-  nav a:hover {
-    color: #e8f0f8;
-    background: var(--navy-mid);
-    border-left-color: var(--orange-light);
-  }
-
-  nav a.active {
-    color: var(--orange-light);
-    background: var(--navy-mid);
-    border-left-color: var(--orange);
-    font-weight: 500;
-  }
-
+  nav a:hover { color: #e8f0f8; background: var(--navy-mid); border-left-color: var(--orange-light); }
+  nav a.active { color: var(--orange-light); background: var(--navy-mid); border-left-color: var(--orange); font-weight: 500; }
   nav .nav-section {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: #4a6080;
-    padding: 14px 20px 4px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: #4a6080; padding: 14px 20px 4px;
   }
+  nav .nav-sub { padding-left: 32px; font-size: 11px; color: #6a85a0; }
 
-  nav .nav-sub {
-    padding-left: 32px;
-    font-size: 11px;
-    color: #6a85a0;
-  }
+  /* ── 메인 ── */
+  main { margin-left: var(--sidebar-w); padding: 0; min-height: 100vh; }
 
-  nav .nav-sub.active {
-    color: var(--orange-light);
-  }
-
-  /* Main content */
-  main {
-    margin-left: var(--sidebar-w);
-    padding: 0;
-    min-height: 100vh;
-  }
-
-  /* Hero */
+  /* ── 히어로 ── */
   #hero {
-    background: var(--navy);
-    color: white;
+    background: var(--navy); color: white;
     padding: 56px 64px 48px;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
-
   #hero::before {
-    content: '';
-    position: absolute;
+    content: ''; position: absolute;
     top: -60px; right: -60px;
     width: 300px; height: 300px;
-    background: var(--orange);
-    opacity: 0.06;
-    border-radius: 50%;
+    background: var(--orange); opacity: 0.06; border-radius: 50%;
   }
-
   #hero .doc-meta {
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--orange-light);
-    font-weight: 500;
-    margin-bottom: 16px;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--orange-light); font-weight: 500; margin-bottom: 16px;
   }
-
-  #hero h1 {
-    font-size: 26px;
-    font-weight: 900;
-    line-height: 1.3;
-    margin-bottom: 8px;
-    color: #ffffff;
-  }
-
-  #hero h1 span {
-    color: var(--orange-light);
-  }
-
-  #hero .subtitle {
-    font-size: 15px;
-    color: #8aa8c8;
-    margin-bottom: 6px;
-  }
-
-  #hero .badge-row {
-    margin-top: 24px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
+  #hero h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 8px; }
+  #hero h1 span { color: var(--orange-light); }
+  #hero .subtitle { font-size: 15px; color: #8aa8c8; margin-bottom: 6px; }
+  #hero .badge-row { margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; }
   .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 500;
   }
-
   .badge-orange { background: rgba(244,99,30,0.18); color: var(--orange-light); }
   .badge-blue { background: rgba(100,160,230,0.15); color: #7ac0f8; }
   .badge-green { background: rgba(30,180,100,0.15); color: #4dd090; }
 
-  /* Sections */
+  /* ── 섹션 ── */
   .section {
     padding: 56px 64px;
     border-bottom: 1px solid var(--border);
     background: var(--white);
+    transition: background 0.25s;
   }
-
-  .section:nth-child(even) {
-    background: var(--bg);
-  }
-
+  .section:nth-child(even) { background: var(--bg); }
   .section-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--orange);
-    margin-bottom: 8px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 8px;
   }
-
-  .section h2 {
-    font-size: 22px;
-    font-weight: 900;
-    color: var(--navy);
-    margin-bottom: 6px;
-  }
-
+  .section h2 { font-size: 22px; font-weight: 900; color: var(--navy); margin-bottom: 6px; }
+  [data-theme="dark"] .section h2 { color: var(--text); }
   .section h3 {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--navy);
-    margin: 36px 0 12px;
-    padding-bottom: 6px;
+    font-size: 16px; font-weight: 700; color: var(--navy);
+    margin: 36px 0 12px; padding-bottom: 6px;
     border-bottom: 2px solid var(--border);
   }
-
+  [data-theme="dark"] .section h3 { color: var(--text); }
   .section h3:first-of-type { margin-top: 28px; }
+  .section h4 { font-size: 14px; font-weight: 700; color: var(--navy-mid); margin: 20px 0 8px; }
+  [data-theme="dark"] .section h4 { color: var(--orange-light); }
+  .section p { color: var(--text); margin-bottom: 12px; line-height: 1.8; }
+  .section-divider { height: 1px; background: var(--border); margin: 32px 0; }
 
-  .section h4 {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--navy-mid);
-    margin: 20px 0 8px;
-  }
-
-  .section p {
-    color: var(--text);
-    margin-bottom: 12px;
-    line-height: 1.8;
-  }
-
-  .section-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 32px 0;
-  }
-
-  /* Tables */
-  .table-wrap {
-    overflow-x: auto;
-    margin: 16px 0;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-
-  th {
-    background: var(--navy);
-    color: #c8d8e8;
-    padding: 10px 14px;
-    text-align: left;
-    font-weight: 500;
-    font-size: 12px;
-    letter-spacing: 0.3px;
-  }
-
-  td {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    vertical-align: top;
-  }
-
-  tr:hover td { background: #f0f5fa; }
-
-  tr.d15 td {
-    background: var(--d15-bg);
-    font-weight: 700;
-    color: var(--navy);
-  }
-
-  tr.d15:hover td { background: #ffe6d5; }
-
+  /* ── 테이블 ── */
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--navy); color: #c8d8e8; padding: 10px 14px; text-align: left; font-weight: 500; font-size: 12px; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+  tr:hover td { background: var(--bg); }
+  tr.d15 td { background: var(--d15-bg); font-weight: 700; }
   td.go { color: var(--go); font-weight: 600; }
   td.stop { color: var(--stop); font-weight: 600; }
 
-  /* Quote block */
+  /* ── 인용 ── */
   .quote-block {
-    background: var(--navy);
-    color: #c8d8e8;
+    background: var(--navy); color: #c8d8e8;
     border-left: 4px solid var(--orange);
-    padding: 20px 24px;
-    margin: 20px 0;
+    padding: 20px 24px; margin: 20px 0;
     border-radius: 0 6px 6px 0;
-    font-size: 15px;
-    line-height: 1.7;
-    font-weight: 400;
+    font-size: 15px; line-height: 1.7;
   }
-
   .quote-block strong { color: var(--orange-light); }
 
-  /* Code block */
+  /* ── 코드 ── */
   .code-block {
-    background: var(--navy);
-    color: #c8e8d8;
-    padding: 20px 24px;
-    border-radius: 6px;
+    background: var(--code-bg); color: var(--code-color);
+    padding: 20px 24px; border-radius: 6px;
     font-family: 'Courier New', monospace;
-    font-size: 12.5px;
-    line-height: 1.7;
-    margin: 16px 0;
-    overflow-x: auto;
+    font-size: 12.5px; line-height: 1.7;
+    margin: 16px 0; overflow-x: auto;
   }
 
-  /* Pipeline steps */
+  /* ── 파이프라인 스텝 ── */
   .pipeline-steps {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    margin: 24px 0;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; margin: 24px 0;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
   }
-
   .pipeline-step {
     padding: 20px 16px;
-    position: relative;
-    border-right: 1px solid var(--border);
+    background: var(--card-bg);
+    position: relative; border-right: 1px solid var(--border);
+    transition: background 0.25s;
   }
-
   .pipeline-step:last-child { border-right: none; }
-
-  .pipeline-step .step-num {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--orange);
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-  }
-
-  .pipeline-step .step-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 8px;
-    line-height: 1.3;
-  }
-
-  .pipeline-step .step-body {
-    font-size: 12px;
-    color: var(--text-light);
-    line-height: 1.6;
-  }
-
+  .pipeline-step .step-num { font-size: 11px; font-weight: 700; color: var(--orange); letter-spacing: 1px; margin-bottom: 6px; }
+  .pipeline-step .step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.3; }
+  .pipeline-step .step-body { font-size: 12px; color: var(--text-light); line-height: 1.6; }
   .pipeline-step .step-arrow {
-    position: absolute;
-    right: -12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 24px;
-    height: 24px;
-    background: var(--orange);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 12px;
-    z-index: 1;
+    position: absolute; right: -12px; top: 50%; transform: translateY(-50%);
+    width: 24px; height: 24px; background: var(--orange); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 12px; z-index: 1;
   }
-
   .pipeline-step:last-child .step-arrow { display: none; }
 
-  /* Portfolio grid */
-  .portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin: 20px 0;
-  }
-
+  /* ── 포트폴리오 그리드 ── */
+  .portfolio-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
   .portfolio-item {
-    background: var(--navy);
-    border-radius: 8px;
-    padding: 16px;
-    color: white;
-    position: relative;
-    overflow: hidden;
+    background: var(--portfolio-bg); border-radius: 8px; padding: 16px;
+    color: white; position: relative; overflow: hidden;
   }
-
-  .portfolio-item::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 3px;
-  }
-
+  .portfolio-item::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
   .portfolio-item.scale::after { background: var(--go); }
   .portfolio-item.stop-item::after { background: #888; }
-
-  .portfolio-item .game-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--orange-light);
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-  }
-
-  .portfolio-item .game-arrow {
-    font-size: 12px;
-    color: #8aa8c8;
-    margin: 6px 0;
-  }
-
-  .portfolio-item .game-outcome {
-    font-size: 12px;
-    font-weight: 700;
-  }
-
+  .portfolio-item .game-label { font-size: 11px; font-weight: 700; color: var(--orange-light); letter-spacing: 1px; margin-bottom: 6px; }
+  .portfolio-item .game-arrow { font-size: 12px; color: #8aa8c8; margin: 6px 0; }
+  .portfolio-item .game-outcome { font-size: 12px; font-weight: 700; }
   .portfolio-item.scale .game-outcome { color: #4dd090; }
   .portfolio-item.stop-item .game-outcome { color: #aaa; }
 
-  /* Game cards */
-  .game-cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin: 20px 0;
-  }
-
+  /* ── 게임 카드 ── */
+  .game-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0; }
   .game-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px;
+    position: relative; overflow: hidden; transition: background 0.25s;
   }
-
-  .game-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--navy);
-  }
-
+  .game-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--navy); }
   .game-card.active::before { background: var(--orange); }
-
-  .game-card .card-case {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--orange);
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
-
-  .game-card .card-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 8px;
-  }
-
-  .game-card .card-meta {
-    font-size: 12px;
-    color: var(--text-light);
-    margin-bottom: 4px;
-  }
-
-  .status-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
-    margin-top: 8px;
-  }
-
+  .game-card .card-case { font-size: 11px; font-weight: 700; color: var(--orange); letter-spacing: 1px; margin-bottom: 4px; }
+  .game-card .card-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .game-card .card-meta { font-size: 12px; color: var(--text-light); margin-bottom: 4px; }
+  .status-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 8px; }
   .status-active { background: var(--orange-pale); color: var(--orange); }
-  .status-waiting { background: #eef2f7; color: #6a85a0; }
+  .status-waiting { background: var(--bg); color: #6a85a0; }
 
-  /* Criteria cards */
-  .criteria-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin: 20px 0;
-  }
-
-  .criteria-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-  }
-
+  /* ── 기준 카드 ── */
+  .criteria-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+  .criteria-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; transition: background 0.25s; }
   .criteria-card .crit-num {
-    width: 28px;
-    height: 28px;
-    background: var(--navy);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 12px;
+    width: 28px; height: 28px; background: var(--navy); color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; margin-bottom: 12px;
   }
+  .criteria-card .crit-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .criteria-card .crit-body { font-size: 12px; color: var(--text-light); line-height: 1.6; }
+  .criteria-card .crit-reason { margin-top: 8px; font-size: 11px; color: var(--orange); background: var(--orange-pale); padding: 6px 10px; border-radius: 4px; }
 
-  .criteria-card .crit-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 6px;
-  }
+  /* ── 교차 분석 ── */
+  .cross-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+  .cross-item { background: var(--cross-bg); border-radius: 8px; padding: 20px; color: white; }
+  .cross-item .cross-label { font-size: 11px; font-weight: 700; color: var(--orange-light); letter-spacing: 1px; margin-bottom: 10px; }
+  .cross-item .cross-body { font-size: 13px; color: #c8d8e8; line-height: 1.65; }
 
-  .criteria-card .crit-body {
-    font-size: 12px;
-    color: var(--text-light);
-    line-height: 1.6;
-  }
+  /* ── 태그 ── */
+  .tag-blocker { display: inline-block; padding: 2px 8px; background: var(--stop-bg); color: var(--stop); border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .tag-confirm { display: inline-block; padding: 2px 8px; background: #eef4ff; color: #3a6bc8; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  [data-theme="dark"] .tag-confirm { background: #1a2540; color: #7ab0f8; }
 
-  .criteria-card .crit-reason {
-    margin-top: 8px;
-    font-size: 11px;
-    color: var(--orange);
-    background: var(--orange-pale);
-    padding: 6px 10px;
-    border-radius: 4px;
-  }
-
-  /* Cross analysis */
-  .cross-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin: 20px 0;
-  }
-
-  .cross-item {
-    background: var(--navy);
-    border-radius: 8px;
-    padding: 20px;
-    color: white;
-  }
-
-  .cross-item .cross-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--orange-light);
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-  }
-
-  .cross-item .cross-body {
-    font-size: 13px;
-    color: #c8d8e8;
-    line-height: 1.65;
-  }
-
-  /* Blocker / 확인사항 badges */
-  .tag-blocker {
-    display: inline-block;
-    padding: 2px 8px;
-    background: var(--stop-bg);
-    color: var(--stop);
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 700;
-  }
-
-  .tag-confirm {
-    display: inline-block;
-    padding: 2px 8px;
-    background: #eef4ff;
-    color: #3a6bc8;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 700;
-  }
-
-  /* Request table */
-  .request-table td:first-child {
-    font-weight: 700;
-    color: var(--navy);
-    white-space: nowrap;
-    width: 32px;
-    text-align: center;
-  }
-
-  /* Summary box */
-  .summary-box {
-    background: var(--navy);
-    border-radius: 8px;
-    padding: 24px 28px;
-    color: white;
-    margin: 20px 0;
-    border-left: 4px solid var(--orange);
-  }
-
-  .summary-box p { color: #c8d8e8; margin-bottom: 6px; }
+  /* ── 요약 박스 ── */
+  .summary-box { background: var(--summary-bg); border-radius: 8px; padding: 24px 28px; color: white; margin: 20px 0; border-left: 4px solid var(--orange); }
+  .summary-box p { color: var(--summary-color); margin-bottom: 6px; }
   .summary-box p:last-child { margin-bottom: 0; }
   .summary-box strong { color: var(--orange-light); }
 
-  /* Appendix */
-  #appendix {
-    background: #f0f4f8;
-    border-top: 4px solid var(--navy-light);
-  }
+  /* ── 요청 테이블 ── */
+  .request-table td:first-child { font-weight: 700; color: var(--navy); white-space: nowrap; width: 32px; text-align: center; }
+  [data-theme="dark"] .request-table td:first-child { color: var(--orange-light); }
 
-  #appendix .section-label {
-    color: var(--text-light);
-  }
-
-  #appendix h2 {
-    color: var(--navy-mid);
-  }
-
-  .appendix-notice {
-    background: var(--navy-mid);
-    color: #8aa8c8;
-    padding: 12px 18px;
-    border-radius: 6px;
-    font-size: 12px;
-    margin-bottom: 24px;
-    border-left: 3px solid #4a6080;
-  }
-
-  /* Footer */
-  footer {
-    padding: 32px 64px;
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-light);
-    background: var(--navy);
-    color: #6a85a0;
-    margin-left: 0;
-  }
-
-  /* Info row */
-  .info-row {
-    display: flex;
-    gap: 32px;
-    margin: 20px 0;
-    flex-wrap: wrap;
-  }
-
-  .info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .info-item .info-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text-light);
-  }
-
-  .info-item .info-value {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--navy);
-  }
-
+  /* ── info row ── */
+  .info-row { display: flex; gap: 32px; margin: 20px 0; flex-wrap: wrap; }
+  .info-item { display: flex; flex-direction: column; gap: 2px; }
+  .info-item .info-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); }
+  .info-item .info-value { font-size: 15px; font-weight: 700; color: var(--text); }
   .info-item .info-value.orange { color: var(--orange); }
 
-  /* Phase plan */
-  .phase-block {
+  /* ── phase block ── */
+  .phase-block { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin: 12px 0; transition: background 0.25s; }
+  .phase-block .phase-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+  .phase-block .phase-badge { background: var(--navy); color: var(--orange-light); padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+  .phase-block ul { margin: 0; padding-left: 18px; }
+  .phase-block li { font-size: 13px; color: var(--text); margin-bottom: 4px; line-height: 1.6; }
+
+  /* ── 별첨 ── */
+  #appendix { background: var(--bg); border-top: 4px solid var(--navy-light); }
+  .appendix-notice { background: var(--navy-mid); color: #8aa8c8; padding: 12px 18px; border-radius: 6px; font-size: 12px; margin-bottom: 24px; border-left: 3px solid #4a6080; }
+
+  /* ── footer ── */
+  footer { padding: 32px 64px; text-align: center; font-size: 12px; color: #6a85a0; background: var(--navy); }
+
+  /* ══════════════════════════════
+     슬라이드 모드
+  ══════════════════════════════ */
+  #slide-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    z-index: 3000;
+    flex-direction: column;
+    background: #0a0f1a;
+  }
+  #slide-overlay.active { display: flex; }
+
+  #slide-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px;
+    background: #0d1b2a;
+    border-bottom: 1px solid #1a2e45;
+    flex-shrink: 0;
+  }
+  #slide-title-bar { font-size: 13px; color: #8aa8c8; font-weight: 500; }
+  #slide-counter-display { font-size: 13px; color: var(--orange-light); font-weight: 700; }
+
+  #slide-close-btn {
+    background: none; border: 1px solid #374151; color: #9ca3af;
+    width: 32px; height: 32px; border-radius: 6px;
+    font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  #slide-close-btn:hover { background: #374151; color: white; }
+
+  #slide-main {
+    flex: 1; overflow-y: auto;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 40px 60px;
+  }
+
+  #slide-content-box {
+    width: 100%; max-width: 880px;
     background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px 24px;
-    margin: 12px 0;
-  }
-
-  .phase-block .phase-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .phase-block .phase-badge {
-    background: var(--navy);
-    color: var(--orange-light);
-    padding: 2px 10px;
     border-radius: 12px;
-    font-size: 11px;
-    font-weight: 700;
+    padding: 48px 56px;
+    min-height: 440px;
+    transition: background 0.25s;
+    position: relative;
   }
 
-  .phase-block ul {
-    margin: 0;
-    padding-left: 18px;
+  /* 슬라이드 내 콘텐츠 스타일 재적용 */
+  #slide-content-box .section-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; }
+  #slide-content-box h2 { font-size: 22px; font-weight: 900; color: var(--navy); margin-bottom: 12px; }
+  [data-theme="dark"] #slide-content-box h2 { color: var(--text); }
+  #slide-content-box h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin: 28px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--border); }
+  [data-theme="dark"] #slide-content-box h3 { color: var(--text); }
+  #slide-content-box h4 { font-size: 14px; font-weight: 700; color: var(--navy-mid); margin: 16px 0 6px; }
+  [data-theme="dark"] #slide-content-box h4 { color: var(--orange-light); }
+  #slide-content-box p { color: var(--text); margin-bottom: 10px; line-height: 1.8; }
+  #slide-content-box table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+  #slide-content-box th { background: var(--navy); color: #c8d8e8; padding: 8px 12px; text-align: left; font-size: 12px; font-weight: 500; }
+  #slide-content-box td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+  #slide-content-box .table-wrap { overflow-x: auto; }
+  #slide-content-box .quote-block { background: var(--navy); color: #c8d8e8; border-left: 4px solid var(--orange); padding: 16px 20px; margin: 14px 0; border-radius: 0 6px 6px 0; font-size: 14px; line-height: 1.7; }
+  #slide-content-box .quote-block strong { color: var(--orange-light); }
+  #slide-content-box .code-block { background: var(--code-bg); color: var(--code-color); padding: 16px 20px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; margin: 12px 0; overflow-x: auto; }
+  #slide-content-box .summary-box { background: var(--summary-bg); border-radius: 8px; padding: 18px 22px; color: white; margin: 14px 0; border-left: 4px solid var(--orange); }
+  #slide-content-box .summary-box p { color: var(--summary-color); margin-bottom: 4px; }
+  #slide-content-box .summary-box strong { color: var(--orange-light); }
+  #slide-content-box .info-row { display: flex; gap: 28px; margin: 14px 0; flex-wrap: wrap; }
+  #slide-content-box .info-value { font-size: 15px; font-weight: 700; color: var(--text); }
+  #slide-content-box .info-value.orange { color: var(--orange); }
+  #slide-content-box .info-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); }
+  #slide-content-box tr.d15 td { background: var(--d15-bg); font-weight: 700; }
+  #slide-content-box td.go { color: var(--go); font-weight: 600; }
+  #slide-content-box td.stop { color: var(--stop); font-weight: 600; }
+  #slide-content-box .pipeline-steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 16px 0; }
+  #slide-content-box .pipeline-step { padding: 14px; background: var(--card-bg); position: relative; border-right: 1px solid var(--border); }
+  #slide-content-box .pipeline-step:last-child { border-right: none; }
+  #slide-content-box .step-num { font-size: 10px; font-weight: 700; color: var(--orange); margin-bottom: 4px; }
+  #slide-content-box .step-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  #slide-content-box .step-body { font-size: 11px; color: var(--text-light); line-height: 1.5; }
+  #slide-content-box .step-arrow { position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; z-index: 1; }
+  #slide-content-box .pipeline-step:last-child .step-arrow { display: none; }
+  #slide-content-box .portfolio-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin: 14px 0; }
+  #slide-content-box .portfolio-item { background: var(--portfolio-bg); border-radius: 8px; padding: 12px; color: white; position: relative; }
+  #slide-content-box .portfolio-item::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; }
+  #slide-content-box .portfolio-item.scale::after { background: var(--go); }
+  #slide-content-box .portfolio-item.stop-item::after { background: #888; }
+  #slide-content-box .game-label { font-size: 10px; font-weight: 700; color: var(--orange-light); margin-bottom: 4px; }
+  #slide-content-box .game-arrow { font-size: 11px; color: #8aa8c8; margin: 4px 0; }
+  #slide-content-box .game-outcome { font-size: 11px; font-weight: 700; }
+  #slide-content-box .portfolio-item.scale .game-outcome { color: #4dd090; }
+  #slide-content-box .portfolio-item.stop-item .game-outcome { color: #aaa; }
+  #slide-content-box .game-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin: 14px 0; }
+  #slide-content-box .game-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; position: relative; overflow: hidden; }
+  #slide-content-box .game-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: var(--navy); }
+  #slide-content-box .game-card.active::before { background: var(--orange); }
+  #slide-content-box .card-case { font-size: 10px; font-weight: 700; color: var(--orange); margin-bottom: 3px; }
+  #slide-content-box .card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  #slide-content-box .card-meta { font-size: 11px; color: var(--text-light); margin-bottom: 3px; }
+  #slide-content-box .status-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; margin-top: 6px; }
+  #slide-content-box .status-active { background: var(--orange-pale); color: var(--orange); }
+  #slide-content-box .status-waiting { background: var(--bg); color: #6a85a0; }
+  #slide-content-box .criteria-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 14px 0; }
+  #slide-content-box .criteria-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  #slide-content-box .crit-num { width: 24px; height: 24px; background: var(--navy); color: white; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; margin-bottom:8px; }
+  #slide-content-box .crit-title { font-size:12px; font-weight:700; color:var(--text); margin-bottom:4px; }
+  #slide-content-box .crit-body { font-size:11px; color:var(--text-light); line-height:1.5; }
+  #slide-content-box .crit-reason { margin-top:6px; font-size:10px; color:var(--orange); background:var(--orange-pale); padding:4px 8px; border-radius:4px; }
+  #slide-content-box .cross-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:14px 0; }
+  #slide-content-box .cross-item { background: var(--cross-bg); border-radius:8px; padding:14px; color:white; }
+  #slide-content-box .cross-label { font-size:10px; font-weight:700; color:var(--orange-light); letter-spacing:1px; margin-bottom:8px; }
+  #slide-content-box .cross-body { font-size:12px; color:#c8d8e8; line-height:1.6; }
+  #slide-content-box .tag-blocker { display:inline-block; padding:2px 7px; background:var(--stop-bg); color:var(--stop); border-radius:4px; font-size:10px; font-weight:700; }
+  #slide-content-box .tag-confirm { display:inline-block; padding:2px 7px; background:#eef4ff; color:#3a6bc8; border-radius:4px; font-size:10px; font-weight:700; }
+  #slide-content-box .phase-block { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:14px 18px; margin:10px 0; }
+  #slide-content-box .phase-badge { background:var(--navy); color:var(--orange-light); padding:2px 8px; border-radius:10px; font-size:10px; font-weight:700; }
+  #slide-content-box ol { padding-left:18px; color:var(--text); }
+  #slide-content-box li { margin-bottom:4px; line-height:1.6; color:var(--text); }
+  #slide-content-box .appendix-notice { background:var(--navy-mid); color:#8aa8c8; padding:10px 14px; border-radius:6px; font-size:12px; margin-bottom:18px; border-left:3px solid #4a6080; }
+  #slide-content-box .section-divider { height:1px; background:var(--border); margin:24px 0; }
+  #slide-content-box #hero { background:var(--navy); color:white; padding:40px 48px; border-radius:8px; }
+  #slide-content-box #hero h1 { font-size:24px; font-weight:900; line-height:1.3; margin-bottom:8px; color:white; }
+  #slide-content-box #hero h1 span { color:var(--orange-light); }
+  #slide-content-box #hero .subtitle { font-size:14px; color:#8aa8c8; }
+  #slide-content-box #hero .doc-meta { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--orange-light); font-weight:500; margin-bottom:12px; }
+  #slide-content-box #hero .badge-row { margin-top:20px; display:flex; gap:8px; flex-wrap:wrap; }
+
+  #slide-bottombar {
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+    padding: 16px 28px;
+    background: #0d1b2a;
+    border-top: 1px solid #1a2e45;
+    flex-shrink: 0;
   }
 
-  .phase-block li {
-    font-size: 13px;
-    color: var(--text);
-    margin-bottom: 4px;
-    line-height: 1.6;
+  .slide-nav-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 9px 20px; border-radius: 8px; border: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .slide-nav-btn.prev { background: #1a2e45; color: #c8d8e8; }
+  .slide-nav-btn.prev:hover { background: #243d57; }
+  .slide-nav-btn.next { background: var(--orange); color: white; }
+  .slide-nav-btn.next:hover { background: var(--orange-light); }
+  .slide-nav-btn:disabled { opacity: 0.35; cursor: default; }
+
+  .slide-dots {
+    display: flex; gap: 5px; align-items: center;
+    max-width: 400px; flex-wrap: wrap; justify-content: center;
+  }
+  .slide-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #374151; cursor: pointer; transition: all 0.15s;
+  }
+  .slide-dot.active { background: var(--orange); width: 18px; border-radius: 4px; }
+
+  #slide-pdf-btn {
+    padding: 8px 16px; border-radius: 8px; border: 1px solid #374151;
+    background: none; color: #9ca3af; font-size: 12px; font-weight: 600;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer; transition: all 0.15s;
+  }
+  #slide-pdf-btn:hover { background: #374151; color: white; }
+
+  /* ── 인쇄 / PDF ── */
+  @media print {
+    #sidebar, #toolbar, #progress-bar, footer { display: none !important; }
+    main { margin-left: 0 !important; }
+    #hero { padding: 40px !important; }
+    .section { padding: 40px !important; page-break-after: always; break-after: page; border: none !important; }
+    #appendix { page-break-after: avoid; }
+    .pipeline-steps { grid-template-columns: repeat(2, 1fr) !important; }
+    .portfolio-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .criteria-cards { grid-template-columns: repeat(2, 1fr) !important; }
+    .cross-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    body { font-size: 12px; }
+    table { font-size: 11px; }
   }
 
-  /* Responsive */
+  /* ── 반응형 ── */
   @media (max-width: 1100px) {
     .pipeline-steps { grid-template-columns: repeat(2, 1fr); }
     .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
@@ -745,12 +544,13 @@
     .criteria-cards { grid-template-columns: repeat(2, 1fr); }
     .cross-grid { grid-template-columns: 1fr; }
   }
-
   @media (max-width: 800px) {
     #sidebar { display: none; }
     main { margin-left: 0; }
     .section { padding: 36px 24px; }
     #hero { padding: 36px 24px; }
+    #slide-main { padding: 20px; }
+    #slide-content-box { padding: 28px 24px; }
   }
 </style>
 </head>
@@ -758,7 +558,32 @@
 
 <div id="progress-bar"></div>
 
-<!-- Sidebar -->
+<!-- 툴바 -->
+<div id="toolbar">
+  <button class="tb-btn" id="theme-btn">☀️ 라이트</button>
+  <button class="tb-btn" id="slide-btn">▶ 슬라이드</button>
+  <button class="tb-btn" id="pdf-btn">↓ PDF</button>
+</div>
+
+<!-- 슬라이드 오버레이 -->
+<div id="slide-overlay">
+  <div id="slide-topbar">
+    <div id="slide-title-bar">프론티어 디펜스 사업기획서 v0.2</div>
+    <div id="slide-counter-display">1 / 1</div>
+    <button id="slide-close-btn" title="닫기 (ESC)">✕</button>
+  </div>
+  <div id="slide-main">
+    <div id="slide-content-box"></div>
+  </div>
+  <div id="slide-bottombar">
+    <button class="slide-nav-btn prev" id="slide-prev">← 이전</button>
+    <div class="slide-dots" id="slide-dots"></div>
+    <button class="slide-nav-btn next" id="slide-next">다음 →</button>
+    <button id="slide-pdf-btn">↓ PDF 저장</button>
+  </div>
+</div>
+
+<!-- 사이드바 -->
 <div id="sidebar">
   <div id="sidebar-header">
     <div class="doc-label">사업기획서 v0.2</div>
@@ -767,33 +592,28 @@
   </div>
   <nav>
     <a href="#exec-summary">Executive Summary</a>
-
     <div class="nav-section">1. 왜 파이프라인이 필요한가</div>
     <a href="#sec1-1" class="nav-sub">1-1. 시장 구조 변화</a>
     <a href="#sec1-2" class="nav-sub">1-2. 기존 방식 한계</a>
     <a href="#sec1-3" class="nav-sub">1-3. 채널 기회</a>
-
     <div class="nav-section">2. 파이프라인 설계</div>
     <a href="#sec2-1" class="nav-sub">2-1. 파이프라인 개요</a>
     <a href="#sec2-2" class="nav-sub">2-2. 게임 선정 기준</a>
     <a href="#sec2-3" class="nav-sub">2-3. 비용 구조 변화</a>
     <a href="#sec2-4" class="nav-sub">2-4. 채널 선택 원칙</a>
     <a href="#sec2-5" class="nav-sub">2-5. 내부 역량</a>
-
     <div class="nav-section">3. 케이스 #1</div>
     <a href="#sec3-1" class="nav-sub">3-1. 파이프라인 경과</a>
     <a href="#sec3-2" class="nav-sub">3-2. 게임 경쟁력</a>
     <a href="#sec3-3" class="nav-sub">3-3. 타겟 오디언스</a>
     <a href="#sec3-4" class="nav-sub">3-4. 비즈니스 모델</a>
     <a href="#sec3-5" class="nav-sub">3-5. 이터레이션</a>
-
     <div class="nav-section">4. 결론 및 요청</div>
     <a href="#sec4-1" class="nav-sub">4-1. 교차 분석</a>
     <a href="#sec4-2" class="nav-sub">4-2. Go / Stop 기준</a>
     <a href="#sec4-3" class="nav-sub">4-3. 액션 플랜</a>
     <a href="#sec4-4" class="nav-sub">4-4. 의사결정 요청</a>
     <a href="#sec4-5" class="nav-sub">4-5. 실패해도 남는 것</a>
-
     <div class="nav-section">별첨</div>
     <a href="#appendix-a1" class="nav-sub">A-1. 에피소드 구조</a>
     <a href="#appendix-a2" class="nav-sub">A-2. 메타 루프</a>
@@ -803,7 +623,6 @@
 
 <main>
 
-<!-- Hero -->
 <div id="hero">
   <div class="doc-meta">사업기획서 · v0.2 · 내부 검토용 · 2026-04-21</div>
   <h1>AI-Native <span>게임 개발 파이프라인</span></h1>
@@ -816,24 +635,19 @@
   </div>
 </div>
 
-<!-- Executive Summary -->
 <div id="exec-summary" class="section">
   <div class="section-label">Executive Summary</div>
   <h2>핵심 명제</h2>
-
   <div class="quote-block">
     학습 비용이 낮고 코어 루프가 검증된 게임들을 빠르게 시장에 출시하고,
     지표가 긍정적인 게임만 스케일업합니다.<br>
     <strong>한 게임의 성공을 예측하는 것이 아니라,
     복수의 검증 기회를 통해 성공 확률을 높이는 구조입니다.</strong>
   </div>
-
   <h3>파이프라인 개요</h3>
   <p>AI 고속 프로토타이핑 → 내부 게이팅 → 수퍼앱 H5(HTML5 웹 게임) 출시 → D15(출시 후 15일) 지표 판단 → PMF(Product-Market Fit, 제품-시장 적합성) 확인 게임만 Native App 전환 및 스케일링. 수퍼앱 채널은 UA(User Acquisition, 유저 획득) 비용 없이 초기 유저 접점이 형성되어 검증 비용을 낮춥니다. H5 검증을 통과한 게임은 한국 시장 ARPU(Average Revenue Per User, 유저당 평균 수익) $450+ 규모의 Native App 사업으로 이어집니다.</p>
-
   <h3>현재 근거</h3>
   <p>AI-Native 방법론을 적용한 결과 캐슬 디펜스 × 카드 머지 하이브리드 프로토타입이 하루 만에 도출되었습니다. 내부 검토 결과 긍정적 평가를 확인했습니다. 채널 특성과 관련해서는 앱인토스 신규 게임 섹션에서 <strong>타사 게임 관찰을 통해 확인한 데이터</strong>가 있습니다. 신규 섹션 2위에 오르는 데 250~350명의 플레이로 충분할 만큼, 채널의 초기 노출 진입 문턱이 낮다는 점입니다.</p>
-
   <h3>요청</h3>
   <div class="table-wrap">
     <table class="request-table">
@@ -847,19 +661,15 @@
       </tbody>
     </table>
   </div>
-
   <h3>실패해도 남는 것</h3>
   <p>게임이 시장 검증을 통과하지 못하더라도 파이프라인 자체는 다음 프로젝트에 즉시 재사용됩니다. 채널 운영 경험, 유저 행동 데이터, AI-Native 개발 역량이 조직 자산으로 축적됩니다.</p>
 </div>
 
-<!-- Section 1 -->
 <div id="sec1-1" class="section">
   <div class="section-label">Section 1</div>
   <h2>왜 파이프라인이 필요한가</h2>
-
   <h3>1-1. 모바일 게임 시장의 구조 변화</h3>
   <p>모바일 게임 시장은 2020년대 초반 이후 구조적 재편 국면에 있습니다.</p>
-
   <div class="table-wrap">
     <table>
       <thead><tr><th>구간</th><th>특징</th></tr></thead>
@@ -870,9 +680,7 @@
       </tbody>
     </table>
   </div>
-
   <p>하이브리드 캐주얼의 성장은 동시에 UA 비용의 상승을 의미합니다. 수익성 있는 장르에 자본이 집중될수록 CPI가 오르고, ROAS(광고비 대비 수익)의 양(+) 영역은 대형 퍼블리셔에게 집중됩니다. 신규 진입자가 App Store / Google Play에서 UA로 승부하는 것은 구조적으로 불리한 환경입니다.</p>
-
   <div class="info-row">
     <div class="info-item">
       <div class="info-label">하이브리드 캐주얼 앱스토어 순매출</div>
@@ -890,13 +698,10 @@
 <div id="sec1-2" class="section">
   <h3>1-2. 기존 개발 방식의 구조적 한계</h3>
   <p>전통적인 개발 사이클에서 "이 게임이 될 것인가"를 판단하는 시점은 사이클의 끝에 있습니다.</p>
-
   <div class="code-block">기획 → 개발 (수개월~수년) → 내부 QA → 소프트런치 → 시장 판단
   ↑                                                        ↑
 자원 투입 시작                                      판단 가능 시점</div>
-
   <p>개발 완료까지의 기간이 길수록, 검토할 수 있는 게임의 수는 줄어듭니다. 같은 시간과 자원으로 1~2개의 프로젝트만 검토하는 구조에서는, 그 게임이 시장에서 통하지 않을 경우 대안이 없습니다.</p>
-
   <div class="summary-box">
     <p><strong>핵심은 비용의 문제가 아닙니다.</strong> 가능성을 확인할 기회의 수가 적다는 구조적 한계입니다. 판단의 기회가 많을수록 성공 가능성이 높은 게임을 식별하고 집중할 확률이 올라갑니다.</p>
   </div>
@@ -906,22 +711,18 @@
   <h3>1-3. 검증 비용이 낮은 채널이 새로운 기회를 만든다</h3>
   <p>App Store / Google Play에서의 시장 검증은 UA 비용이 전제됩니다. 이 비용이 높을수록 검증 횟수는 줄어들고, 검증 횟수가 줄어들수록 성공 가능성이 높은 게임을 식별할 기회도 줄어듭니다.</p>
   <p>반면, UA 비용 없이 기존 유저 기반에 노출될 수 있는 채널이 존재한다면 검토 가능한 게임의 수가 늘어납니다. 수퍼앱 미니게임 채널이 이 구조를 제공합니다.</p>
-
   <div class="summary-box">
     <p><strong>채널의 다양화는 검증 기회를 늘리는 수단입니다.</strong> 검증 기회가 많을수록 Go/Stop 의사결정의 반복이 빨라지고, 자원을 집중할 게임을 더 정확하게 찾을 수 있습니다.</p>
   </div>
 </div>
 
-<!-- Section 2 -->
 <div id="sec2-1" class="section">
   <div class="section-label">Section 2</div>
   <h2>파이프라인 설계</h2>
-
   <h3>2-1. 파이프라인 개요</h3>
   <p>AI-Native 게임 개발 파이프라인은 두 가지를 동시에 실현합니다.</p>
   <p><strong>빠른 식별:</strong> AI 도구로 기획~프로토타입 단계를 압축. 게임의 가능성을 플레이어블한 형태로 가장 빠르게 확인합니다.<br>
   <strong>선택적 집중:</strong> 내부 컨센서스를 통과한 게임만 다음 단계로 진입. 자원이 검증된 가능성에만 투입됩니다.</p>
-
   <div class="pipeline-steps">
     <div class="pipeline-step">
       <div class="step-num">STEP 1</div>
@@ -932,53 +733,34 @@
     <div class="pipeline-step">
       <div class="step-num">STEP 2</div>
       <div class="step-title">내부 컨센서스 게이팅</div>
-      <div class="step-body">내부 플레이테스트 → 합의 기준 충족 여부 판단<br>미통과 시 즉시 종료 → 다음 가능성으로 전환</div>
+      <div class="step-body">내부 플레이테스트 → 합의 기준 충족 여부 판단. 미통과 시 즉시 종료</div>
       <div class="step-arrow">→</div>
     </div>
     <div class="pipeline-step">
       <div class="step-num">STEP 3</div>
       <div class="step-title">개발 완료 및 시장 검증</div>
-      <div class="step-body">개발 착수 기준 1개월 내 목표<br>수퍼앱 출시 → D15 지표 측정</div>
+      <div class="step-body">개발 착수 기준 1개월 내 목표. 수퍼앱 출시 → D15 지표 측정</div>
       <div class="step-arrow">→</div>
     </div>
     <div class="pipeline-step">
       <div class="step-num">STEP 4</div>
       <div class="step-title">확장 (스케일업)</div>
-      <div class="step-body">PMF 확인 → UA 비용 투입 → Native App 전환<br>미확인 → 조기 종료 또는 피벗</div>
+      <div class="step-body">PMF 확인 → UA 비용 투입 → Native App 전환. 미확인 → 조기 종료</div>
     </div>
   </div>
-
   <h4>파이프라인의 핵심 목표 — 복수 게임 동시 검증</h4>
   <p>단일 게임의 성공을 예측하는 것이 목표가 아닙니다. 선정 기준을 통과한 게임들을 빠른 속도로 시장에 출시하고, 지표가 긍정적인 게임에만 자원을 집중하는 포트폴리오 구조가 목표입니다.</p>
-
   <div class="portfolio-grid">
-    <div class="portfolio-item stop-item">
-      <div class="game-label">게임 A</div>
-      <div class="game-arrow">→ 출시 → 지표 확인</div>
-      <div class="game-outcome">Stop</div>
-    </div>
-    <div class="portfolio-item scale">
-      <div class="game-label">게임 B</div>
-      <div class="game-arrow">→ 출시 → 지표 확인</div>
-      <div class="game-outcome">스케일업 ✓</div>
-    </div>
-    <div class="portfolio-item stop-item">
-      <div class="game-label">게임 C</div>
-      <div class="game-arrow">→ 출시 → 지표 확인</div>
-      <div class="game-outcome">Stop</div>
-    </div>
-    <div class="portfolio-item scale">
-      <div class="game-label">게임 D</div>
-      <div class="game-arrow">→ 출시 → 지표 확인</div>
-      <div class="game-outcome">스케일업 ✓</div>
-    </div>
+    <div class="portfolio-item stop-item"><div class="game-label">게임 A</div><div class="game-arrow">→ 출시 → 지표 확인</div><div class="game-outcome">Stop</div></div>
+    <div class="portfolio-item scale"><div class="game-label">게임 B</div><div class="game-arrow">→ 출시 → 지표 확인</div><div class="game-outcome">스케일업 ✓</div></div>
+    <div class="portfolio-item stop-item"><div class="game-label">게임 C</div><div class="game-arrow">→ 출시 → 지표 확인</div><div class="game-outcome">Stop</div></div>
+    <div class="portfolio-item scale"><div class="game-label">게임 D</div><div class="game-arrow">→ 출시 → 지표 확인</div><div class="game-outcome">스케일업 ✓</div></div>
   </div>
 </div>
 
 <div id="sec2-2" class="section">
   <h3>2-2. 게임 선정 기준</h3>
   <p>파이프라인에 투입하는 게임은 세 가지 기준을 충족해야 합니다. 기준의 목적은 하나입니다 — 유저가 게임을 처음 접하는 순간부터 지표가 측정 가능한 상태를 만드는 것.</p>
-
   <div class="criteria-cards">
     <div class="criteria-card">
       <div class="crit-num">1</div>
@@ -995,13 +777,11 @@
     <div class="criteria-card">
       <div class="crit-num">3</div>
       <div class="crit-title">시각적으로 목표가 명확할 것</div>
-      <div class="crit-body">텍스트 설명 없이 화면만으로 "지금 무엇을 해야 하는가", "다음에 무엇이 기다리는가"가 전달되어야 함</div>
+      <div class="crit-body">텍스트 설명 없이 화면만으로 "지금 무엇을 해야 하는가"가 전달되어야 함</div>
       <div class="crit-reason">긴 서술 없이 재방문 동기를 만들어야 리텐션 지표가 의미 있는 수준에서 측정됨</div>
     </div>
   </div>
-
-  <p>수익화 구조 자체는 실험하지 않습니다. 벤치마크 게임의 검증된 BM(Business Model, 비즈니스 모델)과 상품 구성을 그대로 적용하고, 콘텐츠 볼륨만 경량화합니다. 이렇게 해야 D15 시점에 리텐션과 IAP 전환율 지표를 유의미하게 읽을 수 있습니다.</p>
-
+  <p>수익화 구조 자체는 실험하지 않습니다. 벤치마크 게임의 검증된 BM(Business Model, 비즈니스 모델)과 상품 구성을 그대로 적용하고, 콘텐츠 볼륨만 경량화합니다.</p>
   <h4>현재 파이프라인 게임 목록</h4>
   <div class="game-cards">
     <div class="game-card active">
@@ -1033,12 +813,10 @@
       <span class="status-badge status-waiting">파이프라인 대기</span>
     </div>
   </div>
-  <p>각 케이스는 동일한 파이프라인 기준(1개월 개발 목표 → 수퍼앱 출시 → D15 지표 확인)으로 처리됩니다. 케이스 #1의 운영이 안정화되는 시점에 케이스 #2 개발을 착수합니다.</p>
 </div>
 
 <div id="sec2-3" class="section">
   <h3>2-3. 파이프라인이 만드는 비용 구조 변화</h3>
-
   <div class="table-wrap">
     <table>
       <thead><tr><th>항목</th><th>기존 방식</th><th>AI-Native 파이프라인</th></tr></thead>
@@ -1052,19 +830,13 @@
       </tbody>
     </table>
   </div>
-
   <p>개발 완료 기간이 1개월로 단축되면, 기존 방식에서 1년이 걸리는 동안 동일 팀이 최대 12개의 게임 가능성을 검토할 수 있습니다.</p>
 </div>
 
 <div id="sec2-4" class="section">
   <h3>2-4. 채널 선택 원칙</h3>
-
-  <div class="quote-block">
-    <strong>"진입 비용이 가장 낮으면서 유의미한 유저 반응을 측정할 수 있는 채널"</strong>
-  </div>
-
-  <p>이 원칙에서 수퍼앱 미니게임 채널이 도출됩니다. 수퍼앱 미니게임은 기존 앱마켓과 진입 구조가 다릅니다. 유저가 게임을 찾아서 오는 게 아니라, <strong>다른 목적으로 앱을 열었다가 게임을 만납니다.</strong></p>
-
+  <div class="quote-block"><strong>"진입 비용이 가장 낮으면서 유의미한 유저 반응을 측정할 수 있는 채널"</strong></div>
+  <p>이 원칙에서 수퍼앱 미니게임 채널이 도출됩니다. 유저가 게임을 찾아서 오는 게 아니라, <strong>다른 목적으로 앱을 열었다가 게임을 만납니다.</strong></p>
   <div class="info-row">
     <div class="info-item">
       <div class="info-label">H5 게임 시장 규모</div>
@@ -1072,7 +844,6 @@
       <div class="info-label" style="margin-top:2px;">CAGR 17.4% (2025~2030)</div>
     </div>
   </div>
-
   <div class="table-wrap">
     <table>
       <thead><tr><th>플랫폼</th><th>유저 맥락</th><th>과금 인프라</th><th>우리에게 의미하는 것</th></tr></thead>
@@ -1083,26 +854,17 @@
       </tbody>
     </table>
   </div>
-
-  <p>WeChat의 경우 2024년 상반기 기준 상위 20개 신작 중 22.9%가 미니프로그램 출신으로, 수퍼앱 채널이 게임 신작 발굴 파이프라인으로 기능하고 있음이 확인됩니다.</p>
-
   <h4>업계 선행 사례 — Century Games (Kingshot)</h4>
-  <p>Century Games는 H5 게임으로 검증 후 Native App으로 전환하는 플레이북을 실행한 대표 사례입니다. Kingshot는 H5 채널에서 핵심 지표를 확인한 뒤 Native App으로 전환하여 글로벌 매출 상위권에 진입했습니다. 수퍼앱 검증 → Native 전환 구조가 규모 있는 사업으로 이어진 업계 선례입니다.</p>
-
+  <p>Century Games는 H5 게임으로 검증 후 Native App으로 전환하는 플레이북을 실행한 대표 사례입니다. H5 채널에서 핵심 지표를 확인한 뒤 Native App으로 전환하여 글로벌 매출 상위권에 진입했습니다.</p>
   <div class="summary-box">
-    <p><strong>앱인토스와 LINE은 동치가 아닙니다.</strong> 토스는 금융앱(결제 인프라 내재), LINE은 메신저(게임 결제 경험 초기)입니다. 앱인토스에서의 과금 반응을 LINE에 그대로 대입할 수 없습니다. 앱인토스는 "파이프라인 구조 검증 채널", LINE은 "스케일 채널 후보"로 구분합니다.</p>
+    <p><strong>앱인토스와 LINE은 동치가 아닙니다.</strong> 토스는 금융앱(결제 인프라 내재), LINE은 메신저(게임 결제 경험 초기)입니다. 앱인토스는 "파이프라인 구조 검증 채널", LINE은 "스케일 채널 후보"로 구분합니다.</p>
   </div>
-
-  <h4>H5의 기술적 한계와 그 의미</h4>
-  <p>H5는 그래픽 성능과 IAA(In-App Advertising, 인앱 광고) eCPM(effective Cost Per Mille, 천 회 노출당 유효 광고 수익)에서 Native App 대비 열위입니다. 이 한계를 부정하지 않습니다. H5 단계의 목적은 매출 스케일이 아니라 <strong>게임의 핵심 구조와 유저 반응 검증</strong>입니다. 매출 스케일은 Native App 전환 이후에 실현합니다.</p>
 </div>
 
 <div id="sec2-5" class="section">
   <h3>2-5. 내부 역량</h3>
-
   <h4>AI-Native 개발</h4>
   <p>기획 → 구현 → 테스트 사이클을 AI 도구로 압축합니다. 목표는 1사이클 = 1일 이내입니다. 이는 개인의 역량이 아니라 조직이 채택 가능한 프로세스로서 설계되어 있습니다.</p>
-
   <h4>팀 구성 — 추가 채용 없이 현재 팀으로 실행 가능한 구조</h4>
   <div class="table-wrap">
     <table>
@@ -1118,13 +880,10 @@
   <p><strong>추가 인건비 $0.</strong></p>
 </div>
 
-<!-- Section 3 -->
 <div id="sec3-1" class="section">
   <div class="section-label">Section 3</div>
   <h2>케이스 #1 — 프론티어 디펜스</h2>
-
   <h3>3-1. 파이프라인 적용 경과</h3>
-
   <div class="table-wrap">
     <table>
       <thead><tr><th>단계</th><th>결과</th></tr></thead>
@@ -1135,12 +894,8 @@
       </tbody>
     </table>
   </div>
-
-  <p>채널 관찰 데이터가 의미하는 것은 두 가지입니다. 첫째, 초기 노출을 확보하는 데 대규모 UA가 필요하지 않습니다. 둘째, 반대로 말하면 경쟁작 역시 낮은 볼륨으로 상위 노출을 차지할 수 있어 <strong>선점 타이밍이 중요한 채널</strong>입니다.</p>
-
+  <p>채널 관찰 데이터가 의미하는 것: 첫째, 초기 노출 확보에 대규모 UA가 필요하지 않습니다. 둘째, 경쟁작 역시 낮은 볼륨으로 상위 노출을 차지할 수 있어 <strong>선점 타이밍이 중요한 채널</strong>입니다.</p>
   <h4>앱인토스 채널 성과 사례</h4>
-  <p>수퍼앱 채널이 기존 앱마켓과 구조적으로 다른 성장 속도를 만들어낼 수 있음을 보여주는 사례입니다.</p>
-
   <div class="table-wrap">
     <table>
       <thead><tr><th>사례</th><th>성과</th></tr></thead>
@@ -1154,21 +909,16 @@
 
 <div id="sec3-2" class="section">
   <h3>3-2. 게임 경쟁력</h3>
-
   <h4>코어 루프 개요</h4>
   <p>탭으로 대포를 직접 조준해 발사하고, 3초 이내에 폭발과 적 사망이 완결됩니다. 카드 자동 머지로 병사가 소환되고, 5웨이브마다 강화를 선택합니다.</p>
-
   <h4>차별점 — 전투 방식의 고유성</h4>
   <p>수퍼앱 미니게임 환경의 TD 장르는 대부분 배치 후 관전하는 오토배틀 구조입니다. 프론티어 디펜스는 두 가지가 다릅니다.</p>
-
-  <p><strong>전술적 만족:</strong> 병종 구성의 선택이 매 세션의 결과를 바꿉니다. 어떤 카드를 머지하고 어떤 강화를 선택하느냐에 따라 같은 스테이지도 다른 방식으로 클리어됩니다.</p>
-
-  <p><strong>시각적 충족:</strong> 다양한 병종 구성이 화면 위 전투의 밀도와 시각적 풍부함을 만듭니다. 이 두 요소의 조합이 짧은 세션에서도 "다음 구성을 시도해보고 싶다"는 재방문 동기를 형성합니다.</p>
+  <p><strong>전술적 만족:</strong> 병종 구성의 선택이 매 세션의 결과를 바꿉니다. 같은 스테이지도 다른 방식으로 클리어됩니다.</p>
+  <p><strong>시각적 충족:</strong> 다양한 병종 구성이 화면 위 전투의 밀도와 시각적 풍부함을 만듭니다. 짧은 세션에서도 "다음 구성을 시도해보고 싶다"는 재방문 동기를 형성합니다.</p>
 </div>
 
 <div id="sec3-3" class="section">
   <h3>3-3. 타겟 오디언스</h3>
-
   <div class="table-wrap">
     <table>
       <thead><tr><th>구분</th><th>대상</th><th>역할</th></tr></thead>
@@ -1178,16 +928,13 @@
       </tbody>
     </table>
   </div>
-
   <p>두 타겟은 충돌하지 않습니다. 캐주얼 유저는 초반 에피소드를 즐기며 익숙해지고, 전략 게임 경험자는 후반 밸런싱 도전에서 과금 동기를 갖습니다.</p>
-  <p style="color: var(--text-light); font-size: 12px;">에피소드 구조 및 메타 루프 상세 설계 → <strong>별첨 A-1, A-2</strong> 참조</p>
+  <p style="color:var(--text-light);font-size:12px;">에피소드 구조 및 메타 루프 상세 설계 → <strong>별첨 A-1, A-2</strong> 참조</p>
 </div>
 
 <div id="sec3-4" class="section">
   <h3>3-4. 비즈니스 모델</h3>
-
   <p><strong>구조:</strong> IAP + IAA 하이브리드</p>
-
   <div class="table-wrap">
     <table>
       <thead><tr><th>구분</th><th>H5 단계 (앱인토스)</th><th>Native App 단계</th></tr></thead>
@@ -1198,8 +945,7 @@
       </tbody>
     </table>
   </div>
-
-  <h4>ARPDAU(Average Revenue Per Daily Active User, 일간 활성 유저당 평균 수익) 시뮬레이션</h4>
+  <h4>ARPDAU 시뮬레이션</h4>
   <div class="table-wrap">
     <table>
       <thead><tr><th>시나리오</th><th>ARPDAU</th><th>DAU</th><th>월 매출 추정</th></tr></thead>
@@ -1210,11 +956,7 @@
       </tbody>
     </table>
   </div>
-  <p style="font-size: 12px; color: var(--text-light);">H5 ARPDAU $0.03~$0.08은 IAA eCPM Native 대비 -40% 및 업계 IAP 전환율 1.6~2% 적용 추정치입니다.</p>
-
-  <h4>Native App 전환 후 수익 시나리오 (참고)</h4>
-  <p>업계 평균 H5→Native 전환율 35%, 한국 결제 유저 비율 52%, 결제 유저 연간 ARPU $450 적용.</p>
-
+  <h4>Native App 전환 후 수익 시나리오</h4>
   <div class="table-wrap">
     <table>
       <thead><tr><th>H5 DAU</th><th>Native 전환 (35%)</th><th>결제 유저 (52%)</th><th>월 매출 추정</th></tr></thead>
@@ -1225,32 +967,17 @@
       </tbody>
     </table>
   </div>
-
   <div class="summary-box">
-    <p>H5 단계 월 매출 상한($4.8만)과 Native 중간 시나리오($6.8만) 사이의 격차보다, <strong>Native에서는 UA 투입에 따라 DAU 자체가 비선형으로 성장한다는 점이 핵심입니다.</strong> 수익 스케일링의 레버는 H5가 아닌 Native App 단계에 있습니다.</p>
-  </div>
-
-  <h4>H5 → Native App 전환 근거</h4>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>지표</th><th>수치</th><th>출처/비고</th></tr></thead>
-      <tbody>
-        <tr><td>H5 → Native App 전환율</td><td>35% (업계 평균)</td><td>H5에서 검증된 유저의 Native 전환 기대값</td></tr>
-        <tr><td>한국 모바일 게임 ARPU</td><td>$450+/년</td><td>결제 유저 기준</td></tr>
-        <tr><td>한국 결제 유저 비율</td><td>52%</td><td>한국 시장 특성 — 결제 진입장벽 낮음</td></tr>
-      </tbody>
-    </table>
+    <p>Native에서는 UA 투입에 따라 DAU 자체가 비선형으로 성장합니다. <strong>수익 스케일링의 레버는 H5가 아닌 Native App 단계에 있습니다.</strong></p>
   </div>
 </div>
 
 <div id="sec3-5" class="section">
   <h3>3-5. 이터레이션 프레임워크</h3>
-
   <h4>출시 전 — 내부 사이클</h4>
   <div class="code-block">프로토타입 → 내부 플레이테스트 → 수정 → 반복
 목표: 1사이클 = 1일 이내
 판단 지표: 3분 이내 이탈율 / 강화 선택 참여율 / 세션 재시작율</div>
-
   <h4>출시 후 — 외부 데이터 대응</h4>
   <div class="table-wrap">
     <table>
@@ -1258,45 +985,26 @@
       <tbody>
         <tr><td>D1 리텐션</td><td>D+1</td><td>온보딩 수정 (진입 장면, 튜토리얼)</td></tr>
         <tr><td>D7 리텐션</td><td>D+7</td><td>메타 루프 보상 속도 조정</td></tr>
-        <tr class="d15">
-          <td>⚡ D15 종합 판단</td>
-          <td>D+15</td>
-          <td>IAP 전환율 + D15 리텐션 동시 확인 → <strong>Go / 피벗 / Stop 결정</strong></td>
-        </tr>
+        <tr class="d15"><td>⚡ D15 종합 판단</td><td>D+15</td><td>IAP 전환율 + D15 리텐션 동시 확인 → <strong>Go / 피벗 / Stop 결정</strong></td></tr>
         <tr><td>ARPDAU</td><td>D+30</td><td>IAA 배치 / IAP 상품 재설계 (Go 판정 게임에 한함)</td></tr>
       </tbody>
     </table>
   </div>
-
   <div class="summary-box">
     <p><strong>D15 판단이 파이프라인의 핵심 게이트입니다.</strong> Stop 또는 피벗 결정이 나면 해당 케이스의 자원을 다음 케이스로 즉시 전환합니다.</p>
   </div>
-
-  <p style="color: var(--text-light); font-size: 12px; margin-top: 16px;">LiveOps 운영 구조 상세 → <strong>별첨 A-3</strong> 참조</p>
+  <p style="color:var(--text-light);font-size:12px;margin-top:16px;">LiveOps 운영 구조 상세 → <strong>별첨 A-3</strong> 참조</p>
 </div>
 
-<!-- Section 4 -->
 <div id="sec4-1" class="section">
   <div class="section-label">Section 4</div>
   <h2>결론 및 요청</h2>
-
   <h3>4-1. 교차 분석</h3>
-
   <div class="cross-grid">
-    <div class="cross-item">
-      <div class="cross-label">시장</div>
-      <div class="cross-body">기존 UA 경쟁 구조는 신규 진입자에게 불리. 수퍼앱 채널은 진입 비용이 낮고 선발 이점의 시간 창이 존재</div>
-    </div>
-    <div class="cross-item">
-      <div class="cross-label">파이프라인</div>
-      <div class="cross-body">AI-Native 프로토타이핑 1일 도출 + 내부 컨센서스 통과로 첫 검증 사이클 완료. 게임 선정 기준 기반 4개 케이스 파이프라인 구성 완료</div>
-    </div>
-    <div class="cross-item">
-      <div class="cross-label">게임</div>
-      <div class="cross-body">코어 루프의 즉각적 피드백이 수퍼앱 환경에 적합. 메타 루프 설계로 장기 서비스 가능. D15 판단 구조로 포트폴리오 전환 속도 확보</div>
-    </div>
+    <div class="cross-item"><div class="cross-label">시장</div><div class="cross-body">기존 UA 경쟁 구조는 신규 진입자에게 불리. 수퍼앱 채널은 진입 비용이 낮고 선발 이점의 시간 창이 존재</div></div>
+    <div class="cross-item"><div class="cross-label">파이프라인</div><div class="cross-body">AI-Native 프로토타이핑 1일 도출 + 내부 컨센서스 통과로 첫 검증 사이클 완료. 게임 선정 기준 기반 4개 케이스 파이프라인 구성 완료</div></div>
+    <div class="cross-item"><div class="cross-label">게임</div><div class="cross-body">코어 루프의 즉각적 피드백이 수퍼앱 환경에 적합. 메타 루프 설계로 장기 서비스 가능. D15 판단 구조로 포트폴리오 전환 속도 확보</div></div>
   </div>
-
   <div class="summary-box">
     <p>세 축이 수렴하는 지점: <strong>"파이프라인이 작동했고, 4개 케이스를 순차 실행할 준비가 갖춰졌다."</strong></p>
   </div>
@@ -1304,52 +1012,22 @@
 
 <div id="sec4-2" class="section">
   <h3>4-2. Go / Stop 기준</h3>
-
   <div class="table-wrap">
     <table>
       <thead><tr><th>단계</th><th>지표</th><th>Go 기준</th><th>Stop 기준</th></tr></thead>
       <tbody>
-        <tr>
-          <td>Phase 0</td><td>내부 플레이테스트</td>
-          <td class="go">3분 이내 이탈 &lt; 30%, 강화 선택 참여 &gt; 80%</td>
-          <td class="stop">2사이클 수정 후에도 미개선</td>
-        </tr>
-        <tr>
-          <td>Phase 1 D1</td><td>D1 리텐션</td>
-          <td class="go">&gt; 30%</td>
-          <td class="stop">&lt; 20% (2주 지속)</td>
-        </tr>
-        <tr>
-          <td>Phase 1 D7</td><td>D7 리텐션</td>
-          <td class="go">&gt; 15%</td>
-          <td class="stop">&lt; 10% (2주 지속)</td>
-        </tr>
-        <tr class="d15">
-          <td><strong>⚡ Phase 1 D15</strong></td>
-          <td><strong>IAP 전환율 + D15 리텐션</strong></td>
-          <td class="go"><strong>IAP &gt; 1%, D15 &gt; 10%</strong></td>
-          <td class="stop"><strong>둘 중 하나라도 미달 시 피벗 검토</strong></td>
-        </tr>
-        <tr>
-          <td>Phase 2</td><td>ARPDAU</td>
-          <td class="go">&gt; $0.04</td>
-          <td class="stop">&lt; $0.02 (D+60 기준)</td>
-        </tr>
+        <tr><td>Phase 0</td><td>내부 플레이테스트</td><td class="go">3분 이탈 &lt;30%, 강화 참여 &gt;80%</td><td class="stop">2사이클 수정 후에도 미개선</td></tr>
+        <tr><td>Phase 1 D1</td><td>D1 리텐션</td><td class="go">&gt;30%</td><td class="stop">&lt;20% (2주 지속)</td></tr>
+        <tr><td>Phase 1 D7</td><td>D7 리텐션</td><td class="go">&gt;15%</td><td class="stop">&lt;10% (2주 지속)</td></tr>
+        <tr class="d15"><td><strong>⚡ Phase 1 D15</strong></td><td><strong>IAP 전환율 + D15 리텐션</strong></td><td class="go"><strong>IAP &gt;1%, D15 &gt;10%</strong></td><td class="stop"><strong>둘 중 하나라도 미달 시 피벗 검토</strong></td></tr>
+        <tr><td>Phase 2</td><td>ARPDAU</td><td class="go">&gt;$0.04</td><td class="stop">&lt;$0.02 (D+60)</td></tr>
       </tbody>
     </table>
   </div>
-
-  <h4>Stop 발동 시 대응 순서</h4>
-  <ol style="padding-left: 20px; color: var(--text);">
-    <li style="margin-bottom: 6px;">대응 가능한 변수 수정 후 재측정 (온보딩, 가격, 배치)</li>
-    <li style="margin-bottom: 6px;">2사이클 이후에도 미달 → 피벗 또는 중단 논의</li>
-    <li style="margin-bottom: 6px;">피벗 옵션: 채널 변경, 게임 요소 조정, Native App 조기 전환</li>
-  </ol>
 </div>
 
 <div id="sec4-3" class="section">
   <h3>4-3. 액션 플랜</h3>
-
   <h4>블로커 vs 확인사항 분리</h4>
   <div class="table-wrap">
     <table>
@@ -1363,29 +1041,23 @@
       </tbody>
     </table>
   </div>
-
   <div class="phase-block">
     <div class="phase-title"><span class="phase-badge">Phase 0</span> 현재 ~ 4주</div>
     <ul>
       <li>에피소드 구조 전환 (100웨이브 → 에피소드 × 스테이지)</li>
       <li>메타 루프 뼈대 구현 (지휘관 레벨, 병종 카드)</li>
-      <li>내부 플레이테스트 2사이클</li>
-      <li>앱인토스 IAP 신청, LINE 정책 확인</li>
+      <li>내부 플레이테스트 2사이클 / 앱인토스 IAP 신청, LINE 정책 확인</li>
       <li>아트: 캐릭터 실루엣 + 배경 컨셉</li>
     </ul>
   </div>
-
   <div class="phase-block">
     <div class="phase-title"><span class="phase-badge">Phase 1</span> 5~12주 — 앱인토스 소프트런치</div>
     <ul>
-      <li>IAP 포함 업데이트 배포</li>
-      <li>D1/D7 리텐션, IAP 전환율 측정</li>
-      <li>주간 미션 시스템 가동</li>
-      <li>첫 월간 에피소드 업데이트</li>
+      <li>IAP 포함 업데이트 배포 / D1/D7 리텐션, IAP 전환율 측정</li>
+      <li>주간 미션 시스템 가동 / 첫 월간 에피소드 업데이트</li>
       <li>LINE Mini App 진입 타이밍 검토</li>
     </ul>
   </div>
-
   <div class="phase-block">
     <div class="phase-title"><span class="phase-badge">Phase 2</span> 13주+ — 확장</div>
     <ul>
@@ -1393,11 +1065,10 @@
       <li>ARPDAU 데이터 기반 Native App 전환 계획 구체화</li>
     </ul>
   </div>
-
   <h4>케이스 순차 착수 계획</h4>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>케이스</th><th>개발 착수</th><th>수퍼앱 출시 목표</th><th>D15 판단</th><th>비고</th></tr></thead>
+      <thead><tr><th>케이스</th><th>개발 착수</th><th>수퍼앱 출시</th><th>D15 판단</th><th>비고</th></tr></thead>
       <tbody>
         <tr><td><strong>#1 프론티어 디펜스</strong></td><td>현재</td><td>5주차</td><td>7주차</td><td>Phase 0 진행 중</td></tr>
         <tr><td>#2 마을성장 머지</td><td>5주차</td><td>9주차</td><td>11주차</td><td>#1 출시 후 착수</td></tr>
@@ -1406,19 +1077,6 @@
       </tbody>
     </table>
   </div>
-
-  <h4>Phase별 팀 병렬 업무</h4>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Phase</th><th>개발</th><th>기획</th><th>아트</th><th>사업/운영</th></tr></thead>
-      <tbody>
-        <tr><td>0</td><td>에피소드 시스템, 메타 뼈대</td><td>에피소드 설계, 밸런싱</td><td>실루엣, 배경</td><td>플랫폼 협의</td></tr>
-        <tr><td>1</td><td>IAP 연동, LiveOps 기능</td><td>A/B 설계, 신규 에피소드</td><td>UI 폴리싱</td><td>데이터 분석</td></tr>
-        <tr><td>2</td><td>이벤트 반영, 기능 확장</td><td>시즌 설계</td><td>이벤트 비주얼</td><td>UA 집행, LINE 협의</td></tr>
-      </tbody>
-    </table>
-  </div>
-
   <h4>예산</h4>
   <div class="table-wrap">
     <table>
@@ -1431,7 +1089,6 @@
       </tbody>
     </table>
   </div>
-
   <h4>리스크 매트릭스</h4>
   <div class="table-wrap">
     <table>
@@ -1448,14 +1105,13 @@
 
 <div id="sec4-4" class="section">
   <h3>4-4. 의사결정 요청</h3>
-
   <div class="table-wrap">
     <table class="request-table">
       <thead><tr><th>번호</th><th>요청 항목</th><th>결정 필요 이유</th></tr></thead>
       <tbody>
         <tr><td>①</td><td>AI-Native 파이프라인을 조직 방법론으로 공식 채택</td><td>이후 케이스에 동일 프로세스 적용 기반</td></tr>
         <tr><td>②</td><td>프론티어 디펜스를 케이스 #1으로 실행 승인 (Phase 0 착수)</td><td>팀 배치 확정 및 개발 시작</td></tr>
-        <tr><td>③</td><td>Phase 1 진입 기준 사전 합의</td><td>D1 &gt; 30%, D7 &gt; 15%, IAP 전환율 &gt; 1%</td></tr>
+        <tr><td>③</td><td>Phase 1 진입 기준 사전 합의</td><td>D1 &gt;30%, D7 &gt;15%, IAP 전환율 &gt;1%</td></tr>
         <tr><td>④</td><td>Phase 2 UA 예산 ($20K~$30K) 사전 승인 조건 확정</td><td>Phase 1 기준 충족 시 즉시 집행 가능하도록</td></tr>
         <tr><td>⑤</td><td>LINE Mini App 진입 우선순위</td><td>앱인토스 선행 검증 후 LINE 진입 (권고) vs 동시 진입</td></tr>
       </tbody>
@@ -1465,7 +1121,6 @@
 
 <div id="sec4-5" class="section">
   <h3>4-5. 실패해도 남는 것</h3>
-
   <div class="table-wrap">
     <table>
       <thead><tr><th>자산</th><th>내용</th></tr></thead>
@@ -1477,38 +1132,28 @@
       </tbody>
     </table>
   </div>
-
   <div class="summary-box">
     <p>어떤 결과가 나오더라도, 이 프로젝트를 통해 파이프라인은 한 사이클을 완주합니다. <strong>다음 케이스는 이 경험 위에서 시작합니다.</strong></p>
   </div>
-
-  <p style="text-align: center; color: var(--text-light); font-size: 12px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">사업기획서 v0.2 초안 — 내부 검토용</p>
+  <p style="text-align:center;color:var(--text-light);font-size:12px;margin-top:32px;padding-top:24px;border-top:1px solid var(--border);">사업기획서 v0.2 초안 — 내부 검토용</p>
 </div>
 
-<!-- Appendix -->
 <div id="appendix" class="section">
   <div class="section-label">별첨 A</div>
   <h2>게임 설계 상세: 프론티어 디펜스</h2>
-
-  <div class="appendix-notice">
-    이 섹션은 게임 팀 대상 참고 자료입니다. CEO 보고용 본문과 분리되어 있습니다.
-  </div>
+  <div class="appendix-notice">이 섹션은 게임 팀 대상 참고 자료입니다. CEO 보고용 본문과 분리되어 있습니다.</div>
 
   <h3 id="appendix-a1">A-1. 에피소드 구조</h3>
   <p>기존 100웨이브 단일 루프를 에피소드 × 스테이지 구조로 전환합니다. 전환 작업량은 반나절~1일입니다.</p>
-
   <div class="code-block">에피소드 1: 초원의 전초기지   Stage 1-1 ~ 1-10   BOSS: 장군
 에피소드 2: 사막의 관문       Stage 2-1 ~ 2-12   BOSS: 공성기계  환경: 모래폭풍·시야제한
 에피소드 3: 얼어붙은 요새     Stage 3-1 ~ 3-15   BOSS: 신규      환경: 빙판·이동감속
 에피소드 4~5: TBD             업데이트 단위로 추가</div>
-
-  <p>"웨이브 47 클리어"는 공유되지 않습니다. "사막의 관문 보스 격파!"는 공유됩니다. 에피소드 구조는 소셜 공유의 자연스러운 트리거를 만들고, 신규 에피소드 출시를 LiveOps 이벤트와 연동시킵니다.</p>
+  <p>"웨이브 47 클리어"는 공유되지 않습니다. "사막의 관문 보스 격파!"는 공유됩니다.</p>
 
   <div class="section-divider"></div>
 
   <h3 id="appendix-a2">A-2. 메타 루프 설계</h3>
-  <p>메타 루프는 세 개의 축으로 구성됩니다.</p>
-
   <h4>축 1 — 플레이어 성장과 강화된 적의 순환</h4>
   <div class="code-block">플레이어 성장 (병종 강화, 지휘관 레벨)
         ↓
@@ -1517,7 +1162,6 @@
 새로운 전술 구성 실험
         ↓
 다시 성장</div>
-
   <h4>축 2 — 시각적 서사로 단기/중기/장기 목표 부여</h4>
   <div class="table-wrap">
     <table>
@@ -1529,7 +1173,6 @@
       </tbody>
     </table>
   </div>
-
   <h4>축 3 — 전술적 구성의 확장</h4>
   <p>에피소드가 진행될수록 환경 효과와 강화된 적이 새로운 전술을 요구합니다. "이번엔 다른 구성을 써보겠다"는 결정이 메타 루프의 핵심 재방문 동기입니다.</p>
 
@@ -1548,54 +1191,144 @@
   </div>
 </div>
 
-<footer>
-  사업기획서 v0.2 · 케이스 #1: 프론티어 디펜스 · 내부 검토용 · 2026-04-21
-</footer>
+<footer>사업기획서 v0.2 · 케이스 #1: 프론티어 디펜스 · 내부 검토용 · 2026-04-21</footer>
 
 </main>
 
 <script>
-  // Progress bar
-  window.addEventListener('scroll', () => {
-    const doc = document.documentElement;
-    const scrollTop = doc.scrollTop || document.body.scrollTop;
-    const scrollHeight = doc.scrollHeight - doc.clientHeight;
-    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-    document.getElementById('progress-bar').style.width = progress + '%';
+// ─── 다크/라이트 모드 ───────────────────────────────
+const THEME_KEY = 'fd-biz-theme';
+const root = document.documentElement;
+const themeBtn = document.getElementById('theme-btn');
+
+function applyTheme(theme) {
+  root.setAttribute('data-theme', theme);
+  themeBtn.textContent = theme === 'dark' ? '☀️ 라이트' : '🌙 다크';
+  localStorage.setItem(THEME_KEY, theme);
+}
+
+const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+applyTheme(savedTheme);
+
+themeBtn.addEventListener('click', () => {
+  applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+// ─── 진행 바 ────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const pct = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+// ─── 네비 active ────────────────────────────────────
+const navLinks = document.querySelectorAll('nav a');
+const allSections = document.querySelectorAll('[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id);
+      });
+    }
   });
+}, { rootMargin: '-20% 0px -75% 0px' });
+allSections.forEach(s => observer.observe(s));
 
-  // Active nav on scroll
-  const sections = document.querySelectorAll('[id]');
-  const navLinks = document.querySelectorAll('nav a');
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.id;
-        navLinks.forEach(link => {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === '#' + id) {
-            link.classList.add('active');
-          }
-        });
-      }
-    });
-  }, {
-    rootMargin: '-20% 0px -75% 0px'
+navLinks.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(link.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+});
 
-  sections.forEach(section => observer.observe(section));
+// ─── 슬라이드 모드 ──────────────────────────────────
+const overlay = document.getElementById('slide-overlay');
+const slideContent = document.getElementById('slide-content-box');
+const counterEl = document.getElementById('slide-counter-display');
+const dotsEl = document.getElementById('slide-dots');
+const prevBtn = document.getElementById('slide-prev');
+const nextBtn = document.getElementById('slide-next');
 
-  // Smooth scroll
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = document.querySelector(link.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
+// 슬라이드 목록: hero + 모든 .section
+let slides = [];
+let cur = 0;
+
+function buildSlides() {
+  slides = [document.getElementById('hero'), ...document.querySelectorAll('.section')];
+}
+
+function renderSlide(idx) {
+  const el = slides[idx];
+  // hero는 내용 그대로, section은 wrapper 없이 내부 HTML
+  if (el.id === 'hero') {
+    slideContent.innerHTML = '<div id="hero">' + el.innerHTML + '</div>';
+  } else {
+    slideContent.innerHTML = el.innerHTML;
+  }
+
+  // 카운터
+  counterEl.textContent = (idx + 1) + ' / ' + slides.length;
+
+  // 버튼 상태
+  prevBtn.disabled = idx === 0;
+  nextBtn.disabled = idx === slides.length - 1;
+
+  // 도트
+  document.querySelectorAll('.slide-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+
+  // 스크롤 상단
+  document.getElementById('slide-main').scrollTop = 0;
+}
+
+function buildDots() {
+  dotsEl.innerHTML = '';
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'slide-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => { cur = i; renderSlide(cur); });
+    dotsEl.appendChild(d);
   });
+}
+
+function openSlides(startIdx) {
+  buildSlides();
+  buildDots();
+  cur = startIdx || 0;
+  renderSlide(cur);
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSlides() {
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('slide-btn').addEventListener('click', () => openSlides(0));
+document.getElementById('slide-close-btn').addEventListener('click', closeSlides);
+
+prevBtn.addEventListener('click', () => { if (cur > 0) { cur--; renderSlide(cur); } });
+nextBtn.addEventListener('click', () => { if (cur < slides.length - 1) { cur++; renderSlide(cur); } });
+
+document.addEventListener('keydown', e => {
+  if (!overlay.classList.contains('active')) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { if (cur < slides.length - 1) { cur++; renderSlide(cur); } }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { if (cur > 0) { cur--; renderSlide(cur); } }
+  if (e.key === 'Escape') closeSlides();
+});
+
+// 슬라이드 모드 내 PDF
+document.getElementById('slide-pdf-btn').addEventListener('click', () => {
+  closeSlides();
+  setTimeout(() => window.print(), 300);
+});
+
+// ─── PDF (일반 모드) ────────────────────────────────
+document.getElementById('pdf-btn').addEventListener('click', () => {
+  window.print();
+});
 </script>
 </body>
 </html>
